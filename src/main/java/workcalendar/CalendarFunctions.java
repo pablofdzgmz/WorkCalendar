@@ -1,6 +1,6 @@
 package workcalendar;
 
-public class calendarFunctions {
+public class CalendarFunctions {
     public static int zeller(int ano, int mes){
         int a = (14-mes) / 12;
         int y = ano - a;
