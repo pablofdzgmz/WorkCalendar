@@ -12,6 +12,12 @@ public class Schedule {
     public static final Color MORNING_DAY_COLOR = new Color (65, 234, 15);
     public static final Color NIGHT_DAY_COLOR = Color.RED;
     public static final Color WHISTLES_DAY_COLOR = new Color (255,128,0);
+    public static String entryHour;
+    public static String exitHour;
+    public static String holiday;
+    public static String agreement;
+    public static String medic;
+    public static String ownBusiness;
 
     public Schedule(){
 

@@ -29,12 +29,12 @@ public class MonthPanels extends JPanel {
             }
             int dias= monthDays(year,i+1);
             int z = zeller(year, i+1);
-            int contador=0;
+            int count=0;
             //Fill empty first days of month with JLabel
             for(int k=0;k<z;k++) {
                 labelFillMonth[k] = new JLabel(" ");
                 panel12Months[i].add(labelFillMonth[k]);
-                contador++;
+                count++;
             }
             //Fill days of month with JButton
             for(int m=1; m<=dias; m++){
@@ -48,10 +48,10 @@ public class MonthPanels extends JPanel {
                     public void actionPerformed(ActionEvent e) {
                     }
                 });
-                contador++;
+                count++;
             }
             //Fill empty GridLayout spaces with JLabel
-            for(int n=0; n<(42-contador); n++){
+            for(int n=0; n<(42-count); n++){
                 labelFillMonth[n] = new JLabel(" ");
                 panel12Months[i].add(labelFillMonth[n]);
             }

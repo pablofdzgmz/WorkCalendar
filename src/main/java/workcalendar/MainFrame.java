@@ -12,9 +12,9 @@ public class MainFrame extends JFrame {
         setResizable(false);
         setTitle("Calendario laboral 2023");
         MonthPanels panelMonth = new MonthPanels(2023);
-        //QueryFunctionPanels panelQuery = new QueryFunctionPanels();
+        QueryFunctionPanels panelQuery = new QueryFunctionPanels();
         mainPanel.add(panelMonth);
-        //mainPanel.add(panelQuery);
+        mainPanel.add(panelQuery);
         add(mainPanel);
     }
 }
