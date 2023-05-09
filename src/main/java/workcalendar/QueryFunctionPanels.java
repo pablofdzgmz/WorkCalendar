@@ -10,12 +10,9 @@ public class QueryFunctionPanels extends JPanel {
     public static Color dayColour;
     public static ButtonGroup typeOfFreeDay, scheduleButtonGroup;
     public static JRadioButton jRadioButtonMorning, jRadioButtonAfternoon, jRadioButtonNight, jRadioButtonWhistle; // journey buttons
-    public static JCheckBox jCheckBoxExtra; // extra type button
+    public static JCheckBox jCheckBoxExtra, jCheckBoxProfSickLeave, jCheckBoxCommfSickLeave, jCheckBoxCeased; // extra type button
     public static JRadioButton jRadioButtonHolydays, jRadioButtonMedic, jRadioButtonAgreement, jRadioButtonOwnBusiness; //type of free day buttons
-    public static String entryHour, exitHour, typeOfDay, extraHour, extraSlacker, extraReason;
-    public static JToggleButton jToggleButtonAddDay;
-    public static JToggleButton jToggleButtonEditDay;
-    public static JToggleButton jToggleButtonDeleteDay; //type of query buttons
+    public static JToggleButton jToggleButtonAddDay, jToggleButtonEditDay, jToggleButtonDeleteDay; //type of query buttons
     public static JComboBox jComboBoxIdBadBoys; // IdBadBoys combobox
     public JLabel jLabelBadBoyId, jLabelBadBoyName, jLabelBadBoyIdGroup; //Query extra hours panel labels
     public static JTextField jTextFieldBadBoyName, jTextFieldBadBoyGroup, jTextFieldCheckDayForExtraHours; //Query extra hours text fields
@@ -65,17 +62,18 @@ public class QueryFunctionPanels extends JPanel {
         jRadioButtonNight = new JRadioButton("Noche (22:00 - 06:00)");
         jRadioButtonWhistle = new JRadioButton("T/N (08:00 - 22:00)");
         scheduleButtonGroup = new ButtonGroup();
-        scheduleButtonGroup.add(jRadioButtonMorning);
-        scheduleButtonGroup.add(jRadioButtonAfternoon);
-        scheduleButtonGroup.add(jRadioButtonNight);
-        scheduleButtonGroup.add(jRadioButtonWhistle);
+        scheduleButtonGroup.add(jRadioButtonMorning); scheduleButtonGroup.add(jRadioButtonAfternoon);
+        scheduleButtonGroup.add(jRadioButtonNight); scheduleButtonGroup.add(jRadioButtonWhistle);
     }
     public void setExtraTypeComponents(){
         jCheckBoxExtra = new JCheckBox("Extra");
+        jCheckBoxProfSickLeave = new JCheckBox("Baja laboral");
+        jCheckBoxCommfSickLeave = new JCheckBox("Enfermedad común");
+        jCheckBoxCeased = new JCheckBox("Cesado");
     }
     public void setTypeOfFReeDayComponents(){
         jRadioButtonHolydays = new JRadioButton("Vacaciones");
-        jRadioButtonMedic = new JRadioButton("Snoopy");
+        jRadioButtonMedic = new JRadioButton("Medico");
         jRadioButtonAgreement = new JRadioButton("Convenio");
         jRadioButtonOwnBusiness = new JRadioButton("Asuntos propios");
         typeOfFreeDay = new ButtonGroup();
@@ -97,6 +95,7 @@ public class QueryFunctionPanels extends JPanel {
     public void addEditJourneyComponents(){
         functionPanel[0].add(jRadioButtonMorning);functionPanel[0].add(jRadioButtonAfternoon);functionPanel[0].add(jRadioButtonNight);
         functionPanel[0].add(jRadioButtonWhistle);functionPanel[0].add(jToggleButtonAddDay);functionPanel[0].add(jCheckBoxExtra);
+        functionPanel[0].add(jCheckBoxProfSickLeave);functionPanel[0].add(jCheckBoxCommfSickLeave);functionPanel[0].add(jCheckBoxCeased);
         functionPanel[0].add(jToggleButtonEditDay);functionPanel[0].add(jRadioButtonHolydays);functionPanel[0].add(jRadioButtonMedic);
         functionPanel[0].add(jRadioButtonAgreement);functionPanel[0].add(jRadioButtonOwnBusiness);functionPanel[0].add(jToggleButtonDeleteDay);
     }
@@ -179,30 +178,30 @@ public class QueryFunctionPanels extends JPanel {
     public static boolean setEntryExitHour(){
         boolean validHour = false;
         if(jRadioButtonMorning.isSelected()){
-            entryHour = "06:00:00"; exitHour = "14:00:00";
+            Schedule.entryHour = Schedule.MORROW_SCHEDULE[0]; Schedule.exitHour = Schedule.MORROW_SCHEDULE[1];
             dayColour = Schedule.MORNING_DAY_COLOR;
             validHour = true;
         }else if(jRadioButtonAfternoon.isSelected()){
-            entryHour = "14:00:00"; exitHour = "22:00:00";
+            Schedule.entryHour = Schedule.AFTERNOON_SCHEDULE[0]; Schedule.exitHour = Schedule.AFTERNOON_SCHEDULE[1];
             dayColour = Schedule.AFTERNOON_DAY_COLOR;
             validHour = true;
         }else if(jRadioButtonNight.isSelected()){
-            entryHour = "22:00:00"; exitHour = "06:00:00";
+            Schedule.entryHour = Schedule.NIGHT_SCHEDULE[0]; Schedule.exitHour = Schedule.NIGHT_SCHEDULE[1];
             dayColour = Schedule.NIGHT_DAY_COLOR;
             validHour = true;
         }else if(jRadioButtonWhistle.isSelected()){
-            entryHour = "08:00:00"; exitHour = "22:00:00";
+            Schedule.entryHour = Schedule.WHISTLES_SCHEDULE[0]; Schedule.exitHour = Schedule.WHISTLES_SCHEDULE[1];
             dayColour = Schedule.WHISTLES_DAY_COLOR;
             validHour = true;
         }
         return validHour;
     }
     public static void setTypeOfDay(){
-        if(jRadioButtonHolydays.isSelected()){ typeOfDay="Vacaciones";
-        }else if(jRadioButtonMedic.isSelected()){ typeOfDay = "Medico";
-        }else if(jRadioButtonAgreement.isSelected()){ typeOfDay ="Convenio";
-        }else if(jRadioButtonOwnBusiness.isSelected()){ typeOfDay ="Asuntos propios";
-        }else{ typeOfDay = "";
+        if(jRadioButtonHolydays.isSelected()){ Schedule.freeDay = "Vacaciones";
+        }else if(jRadioButtonMedic.isSelected()){ Schedule.freeDay = "Medico";
+        }else if(jRadioButtonAgreement.isSelected()){ Schedule.freeDay = "Convenio";
+        }else if(jRadioButtonOwnBusiness.isSelected()){ Schedule.freeDay = "Asuntos propios";
+        }else{ Schedule.freeDay = "";
         }
     }
 
