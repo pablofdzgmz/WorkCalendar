@@ -2,8 +2,11 @@ package workcalendar;
 
 import javax.swing.*;
 import java.awt.*;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class QueryFunctionPanels extends JPanel {
+    Operations query = new Operations();
     public static JPanel queryPanel = new JPanel();
     public JPanel functionMainPanel = new JPanel();
     public JPanel[] functionPanel = new JPanel[3];
@@ -13,12 +16,13 @@ public class QueryFunctionPanels extends JPanel {
     public static JCheckBox jCheckBoxExtra, jCheckBoxProfSickLeave, jCheckBoxCommfSickLeave, jCheckBoxCeased; // extra type button
     public static JRadioButton jRadioButtonHolydays, jRadioButtonMedic, jRadioButtonAgreement, jRadioButtonOwnBusiness; //type of free day buttons
     public static JToggleButton jToggleButtonAddDay, jToggleButtonEditDay, jToggleButtonDeleteDay; //type of query buttons
-    public static JComboBox jComboBoxIdBadBoys; // IdBadBoys combobox
-    public JLabel jLabelBadBoyId, jLabelBadBoyName, jLabelBadBoyIdGroup; //Query extra hours panel labels
-    public static JTextField jTextFieldBadBoyName, jTextFieldBadBoyGroup, jTextFieldCheckDayForExtraHours; //Query extra hours text fields
+    public static JComboBox jComboBoxWorkerId; // IdBadBoys combobox
+    public JLabel jLabelWorkerId, jLabelWorkerName, jLabelWorkerIdSection, JLabelWorkerOpLevel; //Query extra hours panel labels
+    public static JTextField jTextFieldWorkerName, jTextFieldWorkerSection, jTextFieldCheckDayForExtraHours, jTextFieldWorkerOpLevel; //Query extra hours text fields
     public static JButton jButtonAddFullCalendar, jButtonWhoNextExtra;
     public QueryFunctionPanels(){
         SharedVariables shared = new SharedVariables();
+
         //setBounds(5, shared.alturaPantalla/2,shared.anchoPantalla-25, shared.alturaPantalla/2 );
         //Main Result Panel
         setLayout(new GridLayout(1,2));
@@ -36,15 +40,15 @@ public class QueryFunctionPanels extends JPanel {
         addEditJourneyComponents();
         //Building Extra Hours Query Pannel
         functionPanel[1].setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Selección operario"));
-        functionPanel[1].setLayout(new GridLayout(3,3));
+        functionPanel[1].setLayout(new GridLayout(4,4));
         setQueryPannelComponents();
         addQueryPannelComponents();
         //Building Query Buttons
         setBadBoyQueryComponents();
         addBadBoyQueryComponents();
         //Extra hours Query
-        //queryBadBoyID();
-        //queryBadBoyDataByID();
+        queryWorkerID();
+        queryWorkerDataByID();
         functionPanel[2].setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Consultas"));
         functionPanel[2].setLayout(new GridLayout(3,3));
         //Add Panels to Main Panel
@@ -77,7 +81,8 @@ public class QueryFunctionPanels extends JPanel {
         jRadioButtonAgreement = new JRadioButton("Convenio");
         jRadioButtonOwnBusiness = new JRadioButton("Asuntos propios");
         typeOfFreeDay = new ButtonGroup();
-        typeOfFreeDay.add(jRadioButtonHolydays);typeOfFreeDay.add(jRadioButtonMedic);typeOfFreeDay.add(jRadioButtonAgreement);typeOfFreeDay.add(jRadioButtonOwnBusiness);
+        typeOfFreeDay.add(jRadioButtonHolydays);typeOfFreeDay.add(jRadioButtonMedic);
+        typeOfFreeDay.add(jRadioButtonAgreement);typeOfFreeDay.add(jRadioButtonOwnBusiness);
     }
     public void setTypeOfQueryComponents(){
         jToggleButtonAddDay = new JToggleButton("Añadir");
@@ -100,22 +105,24 @@ public class QueryFunctionPanels extends JPanel {
         functionPanel[0].add(jRadioButtonAgreement);functionPanel[0].add(jRadioButtonOwnBusiness);functionPanel[0].add(jToggleButtonDeleteDay);
     }
     public void setQueryPannelComponents(){
-        jLabelBadBoyId = new JLabel("Codigo");
-        jLabelBadBoyName = new JLabel("Nombre");
-        jLabelBadBoyIdGroup = new JLabel("Seccion");
-        jComboBoxIdBadBoys = new JComboBox();jComboBoxIdBadBoys.setEditable(false);
-        jTextFieldBadBoyName = new JTextField();
-        jTextFieldBadBoyGroup = new JTextField();
-        jTextFieldBadBoyName.setEditable(false);jTextFieldBadBoyName.setText("Nombre del operario");
-        jTextFieldBadBoyGroup.setEditable(false);jTextFieldBadBoyGroup.setText("Seccion");
+        jLabelWorkerId = new JLabel("Code");
+        jLabelWorkerName = new JLabel("Name");
+        jLabelWorkerIdSection = new JLabel("Section");
+        JLabelWorkerOpLevel = new JLabel("Operator level");
+        jComboBoxWorkerId = new JComboBox();
+        jComboBoxWorkerId.setEditable(false);
+        jTextFieldWorkerName = new JTextField();
+        jTextFieldWorkerSection = new JTextField();
+        jTextFieldWorkerOpLevel = new JTextField();
+        jTextFieldWorkerName.setEditable(false); jTextFieldWorkerName.setText("Operator name");
+        jTextFieldWorkerSection.setEditable(false); jTextFieldWorkerSection.setText("Section");
+        jTextFieldWorkerOpLevel.setEditable(false); jTextFieldWorkerOpLevel.setText("Operator Level");
     }
     public void addQueryPannelComponents(){
-        functionPanel[1].add(jLabelBadBoyId);
-        functionPanel[1].add(jComboBoxIdBadBoys);
-        functionPanel[1].add(jLabelBadBoyName);
-        functionPanel[1].add(jTextFieldBadBoyName);
-        functionPanel[1].add(jLabelBadBoyIdGroup);
-        functionPanel[1].add(jTextFieldBadBoyGroup);
+        functionPanel[1].add(jLabelWorkerId); functionPanel[1].add(jComboBoxWorkerId);
+        functionPanel[1].add(jLabelWorkerName); functionPanel[1].add(jTextFieldWorkerName);
+        functionPanel[1].add(jLabelWorkerIdSection); functionPanel[1].add(jTextFieldWorkerSection);
+        functionPanel[1].add(JLabelWorkerOpLevel); functionPanel[1].add(jTextFieldWorkerOpLevel);
     }
     public void setBadBoyQueryComponents(){
         jButtonAddFullCalendar = new JButton("Añadir calendario completo");
@@ -130,22 +137,22 @@ public class QueryFunctionPanels extends JPanel {
         functionPanel[2].add(jButtonWhoNextExtra);
         functionPanel[2].add(jTextFieldCheckDayForExtraHours);
     }
-    /*public void queryBadBoyDataByID(){
-        jComboBoxIdBadBoys.addActionListener(e -> {
-            Operations queryBadBoyData = new Operations();
-            String numBadBoy = ""+jComboBoxIdBadBoys.getSelectedItem();
-            int num = Integer.parseInt(numBadBoy);
+    public void queryWorkerDataByID(){
+        jComboBoxWorkerId.addActionListener(e -> {
+            String numWorker = ""+jComboBoxWorkerId.getSelectedItem();
+            int num = Integer.parseInt(numWorker);
             try {
-                queryBadBoyData.getBadBoyById(num);
-                BadBoys badBoysById = queryBadBoyData.getBadBoyById(num);
-                jTextFieldBadBoyName.setText(badBoysById.getName());
-                jTextFieldBadBoyGroup.setText("" + badBoysById.getIdgroup());
-                fillCalendarColours();
+                query.getWorkerById(num);
+                Worker workerById = query.getWorkerById(num);
+                jTextFieldWorkerName.setText(workerById.getName());
+                jTextFieldWorkerSection.setText("" + workerById.getSection());
+                jTextFieldWorkerOpLevel.setText("" + workerById.getOperatorLevel());
+                //fillCalendarColours();
             } catch (SQLException | NumberFormatException ex ) {
                 throw new RuntimeException(ex);
             }
         });
-    }*/
+    }
     /*public static void fillCalendarColours(){
         Operations queryBadBoyData = new Operations();
         try {
@@ -164,17 +171,16 @@ public class QueryFunctionPanels extends JPanel {
             System.err.println("Something has gone wrong with data base " + e.getMessage());
         }
     }*/
-    /*public void queryBadBoyID(){
-        Operations query = new Operations();
+    public void queryWorkerID(){
         try {
-            ArrayList<Integer> id = query.getBadBoyId();
+            ArrayList<Integer> id = query.getWorkerId();
             for(int i=0;i<id.size();i++) {
-                jComboBoxIdBadBoys.addItem(id.get(i));
+                jComboBoxWorkerId.addItem(id.get(i));
             }
         } catch (SQLException e) {
             System.err.println("Something has gone wrong with data base " + e.getMessage());
         }
-    }*/
+    }
     public static boolean setEntryExitHour(){
         boolean validHour = false;
         if(jRadioButtonMorning.isSelected()){
