@@ -26,12 +26,12 @@ public class QueryFunctionPanels extends JPanel {
         //setBounds(5, shared.alturaPantalla/2,shared.anchoPantalla-25, shared.alturaPantalla/2 );
         //Main Result Panel
         setLayout(new GridLayout(1,2));
-        queryPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Consultas"));
+        queryPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Query Table"));
         queryPanel.setLayout(new GridLayout(1,1));
         add(queryPanel);
         //Building Main Function Panel
         functionMainPanel.setLayout(new GridLayout(3,3));
-        functionMainPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Funciones"));
+        functionMainPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Functions"));
         //Building Edit Journey Panel
         setdEditJourneyComponents();
         setExtraTypeComponents();
@@ -39,7 +39,7 @@ public class QueryFunctionPanels extends JPanel {
         setTypeOfQueryComponents();
         addEditJourneyComponents();
         //Building Extra Hours Query Pannel
-        functionPanel[1].setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Selección operario"));
+        functionPanel[1].setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Select worker"));
         functionPanel[1].setLayout(new GridLayout(4,4));
         setQueryPannelComponents();
         addQueryPannelComponents();
@@ -49,7 +49,7 @@ public class QueryFunctionPanels extends JPanel {
         //Extra hours Query
         queryWorkerID();
         queryWorkerDataByID();
-        functionPanel[2].setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Consultas"));
+        functionPanel[2].setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Querys"));
         functionPanel[2].setLayout(new GridLayout(3,3));
         //Add Panels to Main Panel
         functionMainPanel.add(functionPanel[0]);functionMainPanel.add(functionPanel[1]);functionMainPanel.add(functionPanel[2]);
@@ -59,43 +59,43 @@ public class QueryFunctionPanels extends JPanel {
 
     public void setdEditJourneyComponents(){
         functionPanel[0] = new JPanel();functionPanel[1] = new JPanel();functionPanel[2] = new JPanel();
-        functionPanel[0].setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Editar horario"));
+        functionPanel[0].setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Edit Schedule"));
         functionPanel[0].setLayout(new GridLayout(3,1));
-        jRadioButtonMorning = new JRadioButton("Mañana (06:00 - 14: 00)");
-        jRadioButtonAfternoon = new JRadioButton("Tarde (14:00 - 23:00)");
-        jRadioButtonNight = new JRadioButton("Noche (22:00 - 06:00)");
+        jRadioButtonMorning = new JRadioButton("Morning (06:00 - 14: 00)");
+        jRadioButtonAfternoon = new JRadioButton("Afternoon (14:00 - 23:00)");
+        jRadioButtonNight = new JRadioButton("Night (22:00 - 06:00)");
         jRadioButtonWhistle = new JRadioButton("T/N (08:00 - 22:00)");
         scheduleButtonGroup = new ButtonGroup();
         scheduleButtonGroup.add(jRadioButtonMorning); scheduleButtonGroup.add(jRadioButtonAfternoon);
         scheduleButtonGroup.add(jRadioButtonNight); scheduleButtonGroup.add(jRadioButtonWhistle);
     }
     public void setExtraTypeComponents(){
-        jCheckBoxExtra = new JCheckBox("Extra");
-        jCheckBoxProfSickLeave = new JCheckBox("Baja laboral");
-        jCheckBoxCommfSickLeave = new JCheckBox("Enfermedad común");
-        jCheckBoxCeased = new JCheckBox("Cesado");
+        jCheckBoxExtra = new JCheckBox("Extra Hour");
+        jCheckBoxProfSickLeave = new JCheckBox("Professional Sick Leave");
+        jCheckBoxCommfSickLeave = new JCheckBox("Common Sick Leave");
+        jCheckBoxCeased = new JCheckBox("Ceased");
     }
     public void setTypeOfFReeDayComponents(){
-        jRadioButtonHolydays = new JRadioButton("Vacaciones");
-        jRadioButtonMedic = new JRadioButton("Medico");
-        jRadioButtonAgreement = new JRadioButton("Convenio");
-        jRadioButtonOwnBusiness = new JRadioButton("Asuntos propios");
+        jRadioButtonHolydays = new JRadioButton("Holidays");
+        jRadioButtonMedic = new JRadioButton("Medic");
+        jRadioButtonAgreement = new JRadioButton("Agreement");
+        jRadioButtonOwnBusiness = new JRadioButton("Own Business");
         typeOfFreeDay = new ButtonGroup();
         typeOfFreeDay.add(jRadioButtonHolydays);typeOfFreeDay.add(jRadioButtonMedic);
         typeOfFreeDay.add(jRadioButtonAgreement);typeOfFreeDay.add(jRadioButtonOwnBusiness);
     }
     public void setTypeOfQueryComponents(){
-        jToggleButtonAddDay = new JToggleButton("Añadir");
+        jToggleButtonAddDay = new JToggleButton("Add");
         jToggleButtonAddDay.addActionListener(e -> {
             QueryFunctionPanels.scheduleButtonGroup.clearSelection();
             QueryFunctionPanels.typeOfFreeDay.clearSelection();
         });
-        jToggleButtonEditDay = new JToggleButton("Editar");
+        jToggleButtonEditDay = new JToggleButton("Edit");
         jToggleButtonEditDay.addActionListener(e -> {
             QueryFunctionPanels.scheduleButtonGroup.clearSelection();
             QueryFunctionPanels.typeOfFreeDay.clearSelection();
         });
-        jToggleButtonDeleteDay = new JToggleButton("Borrar");
+        jToggleButtonDeleteDay = new JToggleButton("Delete");
     }
     public void addEditJourneyComponents(){
         functionPanel[0].add(jRadioButtonMorning);functionPanel[0].add(jRadioButtonAfternoon);functionPanel[0].add(jRadioButtonNight);
@@ -114,7 +114,7 @@ public class QueryFunctionPanels extends JPanel {
         jTextFieldWorkerName = new JTextField();
         jTextFieldWorkerSection = new JTextField();
         jTextFieldWorkerOpLevel = new JTextField();
-        jTextFieldWorkerName.setEditable(false); jTextFieldWorkerName.setText("Operator name");
+        jTextFieldWorkerName.setEditable(false); jTextFieldWorkerName.setText("Worker name");
         jTextFieldWorkerSection.setEditable(false); jTextFieldWorkerSection.setText("Section");
         jTextFieldWorkerOpLevel.setEditable(false); jTextFieldWorkerOpLevel.setText("Operator Level");
     }
@@ -125,9 +125,9 @@ public class QueryFunctionPanels extends JPanel {
         functionPanel[1].add(JLabelWorkerOpLevel); functionPanel[1].add(jTextFieldWorkerOpLevel);
     }
     public void setBadBoyQueryComponents(){
-        jButtonAddFullCalendar = new JButton("Añadir calendario completo");
+        jButtonAddFullCalendar = new JButton("Add full new calendar");
         //jButtonAddFullCalendar.addActionListener(e -> FillNewCalendar.fillBadBoyCalendar2023());
-        jButtonWhoNextExtra = new JButton("Agente proximas horas extra");
+        jButtonWhoNextExtra = new JButton("Next worker for extra hours");
         //jButtonWhoNextExtra.addActionListener(e -> checkNextBadBoyExtraHours(QueryFunctionPanels.queryPanel, jTextFieldCheckDayForExtraHours.getText()));
         jTextFieldCheckDayForExtraHours = new JTextField("");
         jTextFieldCheckDayForExtraHours.setSize(12,2);jTextFieldCheckDayForExtraHours.setEditable(false);
@@ -145,7 +145,7 @@ public class QueryFunctionPanels extends JPanel {
                 query.getWorkerById(num);
                 Worker workerById = query.getWorkerById(num);
                 jTextFieldWorkerName.setText(workerById.getName());
-                jTextFieldWorkerSection.setText("" + workerById.getSection());
+                jTextFieldWorkerSection.setText("" + workerById.getSectionName());
                 jTextFieldWorkerOpLevel.setText("" + workerById.getOperatorLevel());
                 //fillCalendarColours();
             } catch (SQLException | NumberFormatException ex ) {

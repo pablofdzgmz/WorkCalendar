@@ -48,7 +48,7 @@ public class Schedule {
         } while (countDay < 366);
     }
     public static void firstWeek(int nDays, int firstDayOfWeek) {
-        String[] week = {"M", "M", "T", "T", "N", "N", "N"};
+        String[] week = {"M", "M", "A", "A", "N", "N", "N"};
         for (int i = 0; i < nDays; i++) {
             if(!isFreeDay(week[i])){
                 daySchedule = checkSchedule(week[i],i);
@@ -57,7 +57,7 @@ public class Schedule {
         }
     }
     public static void secondWeek(int nDays, int firstDayOfWeek) {
-        String[] week = {"L", "L", "M", "M", "T", "T", "T"};
+        String[] week = {"F", "F", "M", "M", "A", "A", "A"};
         for (int i = 0; i < nDays; i++) {
             if(!isFreeDay(week[i])){
                 daySchedule = checkSchedule(week[i],i);
@@ -66,7 +66,7 @@ public class Schedule {
         }
     }
     public static void thirdWeek(int nDays, int firstDayOfWeek) {
-        String[] week = {"N", "N", "L", "L", "M", "M", "M"};
+        String[] week = {"N", "N", "F", "F", "M", "M", "M"};
         for (int i = 0; i < nDays; i++) {
             if(!isFreeDay(week[i])){
                 daySchedule = checkSchedule(week[i],i);
@@ -75,7 +75,7 @@ public class Schedule {
         }
     }
     public static void fourthWeek(int nDays, int firstDayOfWeek) {
-        String[] week = {"T", "T", "N", "N", "L", "L", "L"};
+        String[] week = {"A", "A", "N", "N", "F", "F", "F"};
         for (int i = 0; i < nDays; i++) {
             if(!isFreeDay(week[i])){
                 daySchedule = checkSchedule(week[i],i);
@@ -84,7 +84,7 @@ public class Schedule {
         }
     }
     public static void whistleWeek(int nDays, int firstDayOfWeek){
-        String[] week = {"T/N", "T/N", "T/N", "T/N", "T/N", "L", "L"};
+        String[] week = {"T/N", "T/N", "T/N", "T/N", "T/N", "F", "F"};
         for (int i = 0; i < nDays; i++) {
             if(!isFreeDay(week[i])){
                 daySchedule = checkSchedule(week[i],i);
@@ -99,12 +99,12 @@ public class Schedule {
 
     public static String[] checkSchedule(String dayChar, int dayNum) {
         if (dayChar.equals("M"))  return getMorrowSchedule();
-        else if (dayChar.equals("T")) return getAfternoonSchedule();
+        else if (dayChar.equals("A")) return getAfternoonSchedule();
         else if (dayChar.equals("N")) return getNightSchedule();
         else return getWhistlesSchedule();
     }
     public static boolean isFreeDay(String dayChar){
-        return dayChar.equals("L");
+        return dayChar.equals("F");
     }
     public static String getDateString(int dayOfYear){
         Calendar calendar = Calendar.getInstance();

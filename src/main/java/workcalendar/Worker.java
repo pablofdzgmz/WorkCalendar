@@ -4,6 +4,7 @@ public class Worker {
     private static int idWorker;
     private static String name;
     private static int section;
+    private static String sectionName;
     private static int operatorLevel;
 
     public Worker(int idWorker, String name, int section, int operatorLevel) {
@@ -12,6 +13,15 @@ public class Worker {
         this.section = section;
         this.operatorLevel = operatorLevel;
     }
+    public Worker(int idWorker, String name, String sectionName, int operatorLevel) {
+        this.idWorker = idWorker;
+        this.name = name;
+        this.sectionName = sectionName;
+        this.operatorLevel = operatorLevel;
+    }
+
+    public String getSectionName() { return sectionName; }
+    public void setSectionName(String sectionName) { this.sectionName = sectionName; }
     public int getIdWorker() {
         return idWorker;
     }
