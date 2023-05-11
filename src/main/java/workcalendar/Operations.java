@@ -42,7 +42,7 @@ public class Operations {
         }
         return (ArrayList<Integer>) idlist;
     }
-    public void addDayToDataBaseQuery(int idworker, String section, String day, String entryHour, String exitHour, String extraHour, String freeday, String profsickleave, String commsickleave) throws SQLException {
+    public void addDayToDataBaseQuery(int idworker, String section, String day, String entryHour, String exitHour, String extraHour, String freeday, String profsickleave, String festive, String ceased) throws SQLException {
         Connection conn = myConnection.getMyConnection();
         int recordCount = 0;
         String queryIsDayBusy = "SELECT COUNT(*) FROM schedule WHERE idworker=? AND dia=?";
@@ -54,7 +54,7 @@ public class Operations {
             recordCount = resultSetRecordCount.getInt(1);
         if (recordCount == 0) {
             if((!freeday.equalsIgnoreCase("") && hasFreeDays(idworker,freeday)) || freeday.equalsIgnoreCase("") ){
-                String insertBadBoyJobDay = "INSERT INTO schedule (idworker, section, day, entryhour, exithour, extrahour, freeday, profsickleave, commsickleave) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                String insertBadBoyJobDay = "INSERT INTO schedule (idworker, section, day, entryhour, exithour, extrahour, freeday, profsickleave, festive, ceased) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                 PreparedStatement queryBadBoyByID = conn.prepareStatement(insertBadBoyJobDay);
                 queryBadBoyByID.setInt(1, idworker);
                 queryBadBoyByID.setString(2, section);
@@ -64,10 +64,45 @@ public class Operations {
                 queryBadBoyByID.setString(6, extraHour);
                 queryBadBoyByID.setString(7, freeday);
                 queryBadBoyByID.setString(8, profsickleave);
-                queryBadBoyByID.setString(9, commsickleave);
+                queryBadBoyByID.setString(9, festive);
+                queryBadBoyByID.setString(10, ceased);
                 queryBadBoyByID.executeUpdate();
                 if(!extraHour.equalsIgnoreCase(StringUtils.EMPTY) || !freeday.equalsIgnoreCase(StringUtils.EMPTY))
                     addExtraHoursToTable(idworker, extraHour, freeday);
+            }
+        } else {
+            throw new SQLException();
+        }
+    }
+    public void updateDayToDataBaseQuery(int idworker, String section, String day, String entryHour, String exitHour, String extraHour, String freeday, String profsickleave, String festive, String ceased) throws SQLException {
+        Connection conn = myConnection.getMyConnection();
+        int recordCount = 0;
+        String queryIsDayBusy = "SELECT COUNT(*) FROM schedule WHERE idworker=? and day=?";
+        PreparedStatement queryRecordCount = conn.prepareStatement(queryIsDayBusy);
+        queryRecordCount.setInt(1, idworker);
+        queryRecordCount.setString(2, day);
+        ResultSet resultSetRecordCount = queryRecordCount.executeQuery();
+        while (resultSetRecordCount.next())
+            recordCount = resultSetRecordCount.getInt(1);
+        if (recordCount == 1) {
+            if((!freeday.equalsIgnoreCase("") && hasFreeDays(idworker,freeday)) || freeday.equalsIgnoreCase("") ){
+                String insertBadBoyJobDay = "UPDATE schedule SET idworker=?, section=?, day=?, entryhour=?, exithour=?, extrahour=?, profsickleave=?, festive=?, freeday=?, ceased=? WHERE idworker=? and day=?";
+                PreparedStatement queryBadBoyByID = conn.prepareStatement(insertBadBoyJobDay);
+                queryBadBoyByID.setInt(1, idworker);
+                queryBadBoyByID.setString(2, section);
+                queryBadBoyByID.setString(3, day);
+                queryBadBoyByID.setString(4, entryHour);
+                queryBadBoyByID.setString(5, exitHour);
+                queryBadBoyByID.setString(6, extraHour);
+                queryBadBoyByID.setString(7, profsickleave);
+                queryBadBoyByID.setString(8, festive);
+                queryBadBoyByID.setString(9, freeday);
+                queryBadBoyByID.setString(10, ceased);
+                queryBadBoyByID.setInt(11, idworker);
+                queryBadBoyByID.setString(12, day);
+                queryBadBoyByID.executeUpdate();
+                if((!extraHour.equalsIgnoreCase(StringUtils.EMPTY) && !extraHour.equalsIgnoreCase("No")) || !freeday.equalsIgnoreCase(StringUtils.EMPTY))
+                    addExtraHoursToTable(idworker,extraHour,freeday);
             }
         } else {
             throw new SQLException();
@@ -134,9 +169,9 @@ public class Operations {
         Connection conn = myConnection.getMyConnection();
         int recordCount = 0;
         String currentEntryHour = StringUtils.EMPTY; String currentExitHour = StringUtils.EMPTY; String currentFreeDay = StringUtils.EMPTY;
-        String currentExtraHour = StringUtils.EMPTY; String currentCeased = StringUtils.EMPTY; String currentCommSickLeave = StringUtils.EMPTY;
+        String currentExtraHour = StringUtils.EMPTY; String currentCeased = StringUtils.EMPTY; String currentFestive = StringUtils.EMPTY;
         String currentProfSickLeave = StringUtils.EMPTY;
-        String queryIsDayBusy = "SELECT COUNT(*),entryhour,exithour,extrahour,profsickleave,commsickleave,freeday,ceased FROM schedule WHERE idworker=? and day=?";
+        String queryIsDayBusy = "SELECT COUNT(*),entryhour,exithour,extrahour,profsickleave,festive,freeday,ceased FROM schedule WHERE idworker=? and day=?";
         PreparedStatement queryRecordCount = conn.prepareStatement(queryIsDayBusy);
         queryRecordCount.setInt(1, idworker);
         queryRecordCount.setString(2, day);
@@ -147,14 +182,14 @@ public class Operations {
             currentExitHour = resultSetRecordCount.getString(3);
             currentExtraHour = resultSetRecordCount.getString(4);
             currentProfSickLeave = resultSetRecordCount.getString(5);
-            currentCommSickLeave = resultSetRecordCount.getString(6);
+            currentFestive = resultSetRecordCount.getString(6);
             currentFreeDay = resultSetRecordCount.getString(7);
             currentCeased = resultSetRecordCount.getString(8);
         }
         if (recordCount != 0) {
             checkSchedule(currentEntryHour, currentExitHour);
             checkTypeOfDay(currentFreeDay);
-            checkTypeOfExtraDay(currentExtraHour,currentCeased,currentCommSickLeave,currentProfSickLeave);
+            checkTypeOfExtraDay(currentExtraHour,currentCeased,currentFestive,currentProfSickLeave);
         }
         else{
             checkSchedule("", "");
@@ -174,14 +209,12 @@ public class Operations {
         else if (currentTypeOfDay.equalsIgnoreCase("Agreement")) QueryFunctionPanels.jRadioButtonAgreement.setSelected(true);
         else if (currentTypeOfDay.equalsIgnoreCase("Own Business") ) QueryFunctionPanels.jRadioButtonOwnBusiness.setSelected(true);
         else if (currentTypeOfDay.equalsIgnoreCase("Medic")) QueryFunctionPanels.jRadioButtonMedic.setSelected(true);
-        else if (currentTypeOfDay.equalsIgnoreCase("")) {
-            QueryFunctionPanels.typeOfFreeDay.clearSelection();
-        }
+        else if (currentTypeOfDay.equalsIgnoreCase("")) QueryFunctionPanels.typeOfFreeDay.clearSelection();
     }
-    public void checkTypeOfExtraDay(String extraDay, String profSickLeave, String commSickLeave, String ceased){
+    public void checkTypeOfExtraDay(String extraDay, String profSickLeave, String festive, String ceased){
         if (extraDay.equalsIgnoreCase("Yes")) QueryFunctionPanels.jRadioButtonExtra.setSelected(true);
         else if (profSickLeave.equalsIgnoreCase("Yes")) QueryFunctionPanels.jRadioButtonProfSickLeave.setSelected(true);
-        else if (commSickLeave.equalsIgnoreCase("Yes")) QueryFunctionPanels.jRadioButtonCommfSickLeave.setSelected(true);
+        else if (festive.equalsIgnoreCase("Yes")) QueryFunctionPanels.jRadioButtonFestive.setSelected(true);
         else if (ceased.equalsIgnoreCase("Yes")) QueryFunctionPanels.jRadioButtonCeased.setSelected(true);
     }
     public Color fillWorkerCalendarColours(int currentIdWorker, String currentDay) throws SQLException {

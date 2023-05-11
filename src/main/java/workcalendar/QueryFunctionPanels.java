@@ -13,7 +13,7 @@ public class QueryFunctionPanels extends JPanel {
     public static Color dayColour;
     public static ButtonGroup typeOfFreeDay, scheduleButtonGroup;
     public static JRadioButton jRadioButtonMorning, jRadioButtonAfternoon, jRadioButtonNight, jRadioButtonWhistle; // journey buttons
-    public static JRadioButton jRadioButtonExtra, jRadioButtonProfSickLeave, jRadioButtonCommfSickLeave, jRadioButtonCeased; // extra type button
+    public static JRadioButton jRadioButtonExtra, jRadioButtonProfSickLeave, jRadioButtonFestive, jRadioButtonCeased; // extra type button
     public static JRadioButton jRadioButtonHolydays, jRadioButtonMedic, jRadioButtonAgreement, jRadioButtonOwnBusiness; //type of free day buttons
     public static JToggleButton jToggleButtonAddDay, jToggleButtonEditDay, jToggleButtonDeleteDay; //type of query buttons
     public static JComboBox jComboBoxWorkerId; // IdBadBoys combobox
@@ -37,10 +37,10 @@ public class QueryFunctionPanels extends JPanel {
         setTypeOfFreeDayComponents();
         setTypeOfQueryComponents();
         addEditJourneyComponents();
-        //Building Extra Hours Query Pannel
+        //Building Extra Hours Query Panel
         functionPanel[1].setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Select worker"));
         functionPanel[1].setLayout(new GridLayout(4,4));
-        setQueryPannelComponents();
+        setQueryPanelComponents();
         addQueryPannelComponents();
         //Building Query Buttons
         setBadBoyQueryComponents();
@@ -48,7 +48,7 @@ public class QueryFunctionPanels extends JPanel {
         //Extra hours Query
         queryWorkerID();
         queryWorkerDataByID();
-        functionPanel[2].setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Querys"));
+        functionPanel[2].setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Query"));
         functionPanel[2].setLayout(new GridLayout(3,3));
         //Add Panels to Main Panel
         functionMainPanel.add(functionPanel[0]);functionMainPanel.add(functionPanel[1]);functionMainPanel.add(functionPanel[2]);
@@ -72,7 +72,7 @@ public class QueryFunctionPanels extends JPanel {
     public void setTypeOfFreeDayComponents(){
         jRadioButtonExtra = new JRadioButton("Extra Hour");
         jRadioButtonProfSickLeave = new JRadioButton("Professional Sick Leave");
-        jRadioButtonCommfSickLeave = new JRadioButton("Common Sick Leave");
+        jRadioButtonFestive = new JRadioButton("Festive");
         jRadioButtonCeased = new JRadioButton("Ceased");
         jRadioButtonHolydays = new JRadioButton("Holidays");
         jRadioButtonMedic = new JRadioButton("Medic");
@@ -82,7 +82,7 @@ public class QueryFunctionPanels extends JPanel {
         typeOfFreeDay.add(jRadioButtonHolydays);typeOfFreeDay.add(jRadioButtonMedic);
         typeOfFreeDay.add(jRadioButtonAgreement);typeOfFreeDay.add(jRadioButtonOwnBusiness);
         typeOfFreeDay.add(jRadioButtonExtra);typeOfFreeDay.add(jRadioButtonProfSickLeave);
-        typeOfFreeDay.add(jRadioButtonCommfSickLeave);typeOfFreeDay.add(jRadioButtonCeased);
+        typeOfFreeDay.add(jRadioButtonFestive);typeOfFreeDay.add(jRadioButtonCeased);
     }
     public void setTypeOfQueryComponents(){
         jToggleButtonAddDay = new JToggleButton("Add");
@@ -100,11 +100,11 @@ public class QueryFunctionPanels extends JPanel {
     public void addEditJourneyComponents(){
         functionPanel[0].add(jRadioButtonMorning);functionPanel[0].add(jRadioButtonAfternoon);functionPanel[0].add(jRadioButtonNight);
         functionPanel[0].add(jRadioButtonWhistle);functionPanel[0].add(jToggleButtonAddDay);functionPanel[0].add(jRadioButtonExtra);
-        functionPanel[0].add(jRadioButtonProfSickLeave);functionPanel[0].add(jRadioButtonCommfSickLeave);functionPanel[0].add(jRadioButtonCeased);
+        functionPanel[0].add(jRadioButtonProfSickLeave);functionPanel[0].add(jRadioButtonFestive);functionPanel[0].add(jRadioButtonCeased);
         functionPanel[0].add(jToggleButtonEditDay);functionPanel[0].add(jRadioButtonHolydays);functionPanel[0].add(jRadioButtonMedic);
         functionPanel[0].add(jRadioButtonAgreement);functionPanel[0].add(jRadioButtonOwnBusiness);functionPanel[0].add(jToggleButtonDeleteDay);
     }
-    public void setQueryPannelComponents(){
+    public void setQueryPanelComponents(){
         jLabelWorkerId = new JLabel("Code");
         jLabelWorkerName = new JLabel("Name");
         jLabelWorkerIdSection = new JLabel("Section");
