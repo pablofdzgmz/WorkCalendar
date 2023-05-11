@@ -2,6 +2,8 @@ package workcalendar;
 
 import org.apache.commons.lang3.StringUtils;
 
+import javax.swing.*;
+import java.awt.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +42,7 @@ public class Operations {
         }
         return (ArrayList<Integer>) idlist;
     }
-    /*public void addDayToDataBaseQuery(int idworker, String section, String day, String entryHour, String exitHour, String extraHour, String freeday, String profsickleave, String commsickleave) throws SQLException {
+    public void addDayToDataBaseQuery(int idworker, String section, String day, String entryHour, String exitHour, String extraHour, String freeday, String profsickleave, String commsickleave) throws SQLException {
         Connection conn = myConnection.getMyConnection();
         int recordCount = 0;
         String queryIsDayBusy = "SELECT COUNT(*) FROM schedule WHERE idworker=? AND dia=?";
@@ -51,7 +53,7 @@ public class Operations {
         while (resultSetRecordCount.next())
             recordCount = resultSetRecordCount.getInt(1);
         if (recordCount == 0) {
-            if((!typeOfFreeDay.equalsIgnoreCase("") && hasFreeDays(idbadboy,typeOfFreeDay)) || typeOfFreeDay.equalsIgnoreCase("") ){
+            if((!freeday.equalsIgnoreCase("") && hasFreeDays(idworker,freeday)) || freeday.equalsIgnoreCase("") ){
                 String insertBadBoyJobDay = "INSERT INTO schedule (idworker, section, day, entryhour, exithour, extrahour, freeday, profsickleave, commsickleave) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
                 PreparedStatement queryBadBoyByID = conn.prepareStatement(insertBadBoyJobDay);
                 queryBadBoyByID.setInt(1, idworker);
@@ -60,15 +62,148 @@ public class Operations {
                 queryBadBoyByID.setString(4, entryHour);
                 queryBadBoyByID.setString(5, exitHour);
                 queryBadBoyByID.setString(6, extraHour);
-                queryBadBoyByID.setString(7, slacker);
-                queryBadBoyByID.setString(8, reason);
-                queryBadBoyByID.setString(9, typeOfFreeDay);
+                queryBadBoyByID.setString(7, freeday);
+                queryBadBoyByID.setString(8, profsickleave);
+                queryBadBoyByID.setString(9, commsickleave);
                 queryBadBoyByID.executeUpdate();
-                if(!extraHour.equalsIgnoreCase(StringUtils.EMPTY) || !typeOfFreeDay.equalsIgnoreCase(StringUtils.EMPTY))
-                    addExtraHoursToTable(idbadboy, entryHour, exitHour, extraHour, slacker, reason, typeOfFreeDay);
+                if(!extraHour.equalsIgnoreCase(StringUtils.EMPTY) || !freeday.equalsIgnoreCase(StringUtils.EMPTY))
+                    addExtraHoursToTable(idworker, extraHour, freeday);
             }
         } else {
             throw new SQLException();
         }
-    }*/
+    }
+    private void addExtraHoursToTable(int idworker, String extraHour, String freeday) throws SQLException {
+        Connection conn = myConnection.getMyConnection();
+        String insertHours = StringUtils.EMPTY;
+        int hours = 8;
+        if(extraHour.equalsIgnoreCase("Yes")){
+            insertHours = "UPDATE hours SET extrahours = extrahours + " + hours + " WHERE hours.idworker = " + idworker + "";
+        }else if(freeday.equalsIgnoreCase("Holidays")) {
+            insertHours = "UPDATE hours SET holidays = a-1 WHERE hours.idworker = " + idworker + "";
+        }else if(freeday.equalsIgnoreCase("Agreement")) {
+            insertHours = "UPDATE hours SET agreement = agreement-1 WHERE hours.idworker = " + idworker + "";
+        }else if(freeday.equalsIgnoreCase("Own Business")) {
+            insertHours = "UPDATE hours SET ownbusiness = ownbusiness-1 WHERE horas.idworker = " + idworker + "";
+        }else if(freeday.equalsIgnoreCase("Medic")) {
+            insertHours = "UPDATE hours SET medic = medic-1 WHERE horas.idworker = " + idworker + "";
+        }
+        Statement statement = conn.createStatement();
+        statement.executeUpdate(insertHours);
+    }
+    private boolean hasFreeDays(int idworker, String freeDayType) throws SQLException{
+        Connection conn = myConnection.getMyConnection();
+        String type = StringUtils.EMPTY;
+        if (freeDayType.equalsIgnoreCase("Holidays")) type = "Holidays";
+        else if (freeDayType.equalsIgnoreCase("Agreement")) type = "Agreement";
+        else if (freeDayType.equalsIgnoreCase("Own Business")) type = "Own Business";
+        else if (freeDayType.equalsIgnoreCase("Medic")) type = "Medic";
+        int recordCount = 0;
+        String queryHasFreeDay = "SELECT " + type + " FROM horas where idworker = ?";
+        PreparedStatement queryRecordCount = conn.prepareStatement(queryHasFreeDay);
+        queryRecordCount.setInt(1, idworker);
+        ResultSet resultSetRecordCount = queryRecordCount.executeQuery();
+        while (resultSetRecordCount.next())
+            recordCount = resultSetRecordCount.getInt(1);
+        if (recordCount == 0 ){
+            JOptionPane.showMessageDialog(null,"You haven't enough " + freeDayType + " days availables !","¡ Error !",JOptionPane.ERROR_MESSAGE);
+            return false;
+        } else return true;
+    }
+    public void deleteDayFromDataBase(int idworker, String workDay) throws SQLException {
+        Connection conn = myConnection.getMyConnection();
+        int recordCount = 0;
+        String queryIsDayBusy = "SELECT COUNT(*) FROM schedule WHERE idworker=? and day=?";
+        PreparedStatement queryRecordCount = conn.prepareStatement(queryIsDayBusy);
+        queryRecordCount.setInt(1, idworker);
+        queryRecordCount.setString(2, workDay);
+        ResultSet resultSetRecordCount = queryRecordCount.executeQuery();
+        while (resultSetRecordCount.next())
+            recordCount = resultSetRecordCount.getInt(1);
+        if (recordCount == 1) {
+            String deleteWorkerJobDay = "DELETE FROM schedule WHERE idworker=? and day=?";
+            PreparedStatement queryWorkerByID = conn.prepareStatement(deleteWorkerJobDay);
+            queryWorkerByID.setInt(1, idworker);
+            queryWorkerByID.setString(2, workDay);
+            queryWorkerByID.executeUpdate();
+        } else {
+            throw new SQLException();
+        }
+    }
+    public void setDayTypeFromDataBase(int idworker, String day) throws SQLException{
+        Connection conn = myConnection.getMyConnection();
+        int recordCount = 0;
+        String currentEntryHour = StringUtils.EMPTY; String currentExitHour = StringUtils.EMPTY; String currentFreeDay = StringUtils.EMPTY;
+        String currentExtraHour = StringUtils.EMPTY; String currentCeased = StringUtils.EMPTY; String currentCommSickLeave = StringUtils.EMPTY;
+        String currentProfSickLeave = StringUtils.EMPTY;
+        String queryIsDayBusy = "SELECT COUNT(*),entryhour,exithour,extrahour,profsickleave,commsickleave,freeday,ceased FROM schedule WHERE idworker=? and day=?";
+        PreparedStatement queryRecordCount = conn.prepareStatement(queryIsDayBusy);
+        queryRecordCount.setInt(1, idworker);
+        queryRecordCount.setString(2, day);
+        ResultSet resultSetRecordCount = queryRecordCount.executeQuery();
+        while (resultSetRecordCount.next()) {
+            recordCount = resultSetRecordCount.getInt(1);
+            currentEntryHour = resultSetRecordCount.getString(2);
+            currentExitHour = resultSetRecordCount.getString(3);
+            currentExtraHour = resultSetRecordCount.getString(4);
+            currentProfSickLeave = resultSetRecordCount.getString(5);
+            currentCommSickLeave = resultSetRecordCount.getString(6);
+            currentFreeDay = resultSetRecordCount.getString(7);
+            currentCeased = resultSetRecordCount.getString(8);
+        }
+        if (recordCount != 0) {
+            checkSchedule(currentEntryHour, currentExitHour);
+            checkTypeOfDay(currentFreeDay);
+            checkTypeOfExtraDay(currentExtraHour,currentCeased,currentCommSickLeave,currentProfSickLeave);
+        }
+        else{
+            checkSchedule("", "");
+            checkTypeOfDay("");
+            checkTypeOfExtraDay("","","","");
+        }
+    }
+    public void checkSchedule(String entryHour, String exitHour){
+        if (entryHour.equalsIgnoreCase("06:00:00")) QueryFunctionPanels.jRadioButtonMorning.setSelected(true);
+        else if (entryHour.equalsIgnoreCase("14:00:00")) QueryFunctionPanels.jRadioButtonAfternoon.setSelected(true);
+        else if (entryHour.equalsIgnoreCase("22:00:00")) QueryFunctionPanels.jRadioButtonNight.setSelected(true);
+        else if (entryHour.equalsIgnoreCase("08:00:00")) QueryFunctionPanels.jRadioButtonWhistle.setSelected(true);
+        else if (entryHour.equalsIgnoreCase("")) QueryFunctionPanels.scheduleButtonGroup.clearSelection();
+    }
+    public void checkTypeOfDay(String currentTypeOfDay){
+        if (currentTypeOfDay.equalsIgnoreCase("Holidays")) QueryFunctionPanels.jRadioButtonHolydays.setSelected(true);
+        else if (currentTypeOfDay.equalsIgnoreCase("Agreement")) QueryFunctionPanels.jRadioButtonAgreement.setSelected(true);
+        else if (currentTypeOfDay.equalsIgnoreCase("Own Business") ) QueryFunctionPanels.jRadioButtonOwnBusiness.setSelected(true);
+        else if (currentTypeOfDay.equalsIgnoreCase("Medic")) QueryFunctionPanels.jRadioButtonMedic.setSelected(true);
+        else if (currentTypeOfDay.equalsIgnoreCase("")) {
+            QueryFunctionPanels.typeOfFreeDay.clearSelection();
+        }
+    }
+    public void checkTypeOfExtraDay(String extraDay, String profSickLeave, String commSickLeave, String ceased){
+        if (extraDay.equalsIgnoreCase("Yes")) QueryFunctionPanels.jRadioButtonExtra.setSelected(true);
+        else if (profSickLeave.equalsIgnoreCase("Yes")) QueryFunctionPanels.jRadioButtonProfSickLeave.setSelected(true);
+        else if (commSickLeave.equalsIgnoreCase("Yes")) QueryFunctionPanels.jRadioButtonCommfSickLeave.setSelected(true);
+        else if (ceased.equalsIgnoreCase("Yes")) QueryFunctionPanels.jRadioButtonCeased.setSelected(true);
+    }
+    public Color fillWorkerCalendarColours(int currentIdWorker, String currentDay) throws SQLException {
+        Connection conn = myConnection.getMyConnection();
+        int recordCount = 0;
+        Color dayColour = null;
+        String currentEntryHour = StringUtils.EMPTY;
+        String queryIsDayBusy = "SELECT COUNT(*),entryhour FROM schedule WHERE idworker=? and day=?";
+        PreparedStatement queryRecordCount = conn.prepareStatement(queryIsDayBusy);
+        queryRecordCount.setInt(1, currentIdWorker);
+        queryRecordCount.setString(2, currentDay);
+        ResultSet resultSetRecordCount = queryRecordCount.executeQuery();
+        while (resultSetRecordCount.next()) {
+            recordCount = resultSetRecordCount.getInt(1);
+            currentEntryHour = resultSetRecordCount.getString(2);
+        }
+        if (recordCount != 0) {
+            if (currentEntryHour.equalsIgnoreCase("06:00:00")) dayColour = Schedule.MORNING_DAY_COLOR;
+            else if (currentEntryHour.equalsIgnoreCase("14:00:00")) dayColour = Schedule.AFTERNOON_DAY_COLOR;
+            else if (currentEntryHour.equalsIgnoreCase("22:00:00")) dayColour = Schedule.NIGHT_DAY_COLOR;
+            else if (currentEntryHour.equalsIgnoreCase("08:00:00")) dayColour = Schedule.WHISTLES_DAY_COLOR;
+        }
+        return dayColour;
+    }
 }
