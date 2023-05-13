@@ -1,7 +1,6 @@
 package workcalendar;
 import javax.swing.*;
 import java.sql.*;
-import java.util.Arrays;
 
 public class ResultQueryPanel {
     private DbConnection myConnection;
@@ -41,11 +40,11 @@ public class ResultQueryPanel {
             System.err.println("Error" + e.getMessage());
         }
     }
-    public void checkNextBadBoyExtraHours(JPanel panel, String dayOfExtraHours, String entryHour) throws SQLException{
+    public void checkNextWorkerExtraHours(JPanel panel, String dayOfExtraHours, String entryHour) throws SQLException{
         try{
             panel.updateUI();
             Connection conn = myConnection.getMyConnection();
-            String code = queryNextBadBoyAbleForExtraHours(dayOfExtraHours, entryHour);
+            String code = queryNextWorkerAbleForExtraHours(dayOfExtraHours, entryHour);
             Statement statement = conn.createStatement();
             ResultSet result = statement.executeQuery(code);
             // Data to be displayed in the JTable
@@ -66,7 +65,7 @@ public class ResultQueryPanel {
             System.err.println("Error" + e.getMessage());
         }
     }
-    public String queryNextBadBoyAbleForExtraHours(String dayOfExtraHours, String sheduleExtraWorkDay){
+    public String queryNextWorkerAbleForExtraHours(String dayOfExtraHours, String sheduleExtraWorkDay){
         if(sheduleExtraWorkDay.equalsIgnoreCase("06:00:00")){
             int day = Integer.parseInt(dayOfExtraHours.charAt(8) +"" +dayOfExtraHours.charAt(9));
             int month = Integer.parseInt(dayOfExtraHours.charAt(5) +"" +dayOfExtraHours.charAt(6));
