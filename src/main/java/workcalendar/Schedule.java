@@ -112,12 +112,13 @@ public class Schedule {
         return "" + dateFormat.format(date);
     }
     public static void addDayToDataBase(String day, String entryHour, String exitHour){
-        /*Operations query = new Operations();
+        Operations operations = new Operations();
+        Worker worker = new Worker(Integer.parseInt(QueryFunctionPanels.jComboBoxWorkerId.getSelectedItem().toString()),QueryFunctionPanels.jTextFieldWorkerName.getText(), QueryFunctionPanels.jTextFieldWorkerSection.getText(), Integer.parseInt(QueryFunctionPanels.jTextFieldWorkerOpLevel.getText()));
         try {
-            query.addDayToDataBaseQuery(Integer.parseInt(QueryFunctionPanels.jComboBoxIdBadBoys.getSelectedItem().toString()), Integer.parseInt(QueryFunctionPanels.jTextFieldBadBoyGroup.getText()),day,entryHour ,exitHour,"","","","");
+            operations.addDayToDataBaseQuery(worker.getIdWorker(), worker.getSectionName(), day, entryHour , exitHour,"","","","", "");
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null,"¡ Error al construir calendario !","¡ Error !",JOptionPane.ERROR_MESSAGE);
             System.err.println("Something has gone wrong with data base " + e.getMessage());
-        }*/
+        }
     }
 }
