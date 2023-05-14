@@ -1,11 +1,11 @@
 package workcalendar;
 
 public class Worker {
-    private static int idWorker;
-    private static String name;
-    private static int section;
-    private static String sectionName;
-    private static int operatorLevel;
+    private int idWorker;
+    private String name;
+    private int section;
+    private String sectionName;
+    private int operatorLevel;
 
     public Worker(int idWorker, String name, int section, int operatorLevel) {
         this.idWorker = idWorker;
@@ -19,7 +19,9 @@ public class Worker {
         this.sectionName = sectionName;
         this.operatorLevel = operatorLevel;
     }
+    public Worker(){
 
+    }
     public String getSectionName() { return sectionName; }
     public void setSectionName(String sectionName) { this.sectionName = sectionName; }
     public int getIdWorker() {

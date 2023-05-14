@@ -65,8 +65,8 @@ public class ResultQueryPanel {
             System.err.println("Error" + e.getMessage());
         }
     }
-    public String queryNextWorkerAbleForExtraHours(String dayOfExtraHours, String sheduleExtraWorkDay){
-        if(sheduleExtraWorkDay.equalsIgnoreCase("06:00:00")){
+    public String queryNextWorkerAbleForExtraHours(String dayOfExtraHours, String scheduleExtraWorkDay){
+        if(scheduleExtraWorkDay.equalsIgnoreCase("06:00:00")){
             int day = Integer.parseInt(dayOfExtraHours.charAt(8) +"" +dayOfExtraHours.charAt(9));
             int month = Integer.parseInt(dayOfExtraHours.charAt(5) +"" +dayOfExtraHours.charAt(6));
             if(day == 1){

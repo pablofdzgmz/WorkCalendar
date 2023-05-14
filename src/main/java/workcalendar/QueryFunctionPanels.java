@@ -1,12 +1,15 @@
 package workcalendar;
 
+import org.apache.commons.lang3.StringUtils;
+
 import javax.swing.*;
 import java.awt.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class QueryFunctionPanels extends JPanel {
-    Operations query = new Operations();
+    public static Worker worker = new Worker();
+    public static Operations operations = new Operations();
     public static JPanel queryPanel = new JPanel();
     public JPanel functionMainPanel = new JPanel();
     public JPanel[] functionPanel = new JPanel[3];
@@ -21,8 +24,6 @@ public class QueryFunctionPanels extends JPanel {
     public static JTextField jTextFieldWorkerName, jTextFieldWorkerSection, jTextFieldCheckDayForExtraHours, jTextFieldWorkerOpLevel; //Query extra hours text fields
     public static JButton jButtonAddFullCalendar, jButtonWhoNextExtra;
     public QueryFunctionPanels(){
-        SharedVariables shared = new SharedVariables();
-
         //setBounds(5, shared.alturaPantalla/2,shared.anchoPantalla-25, shared.alturaPantalla/2 );
         //Main Result Panel
         setLayout(new GridLayout(1,2));
@@ -137,13 +138,13 @@ public class QueryFunctionPanels extends JPanel {
         functionPanel[2].add(jButtonWhoNextExtra);
         functionPanel[2].add(jTextFieldCheckDayForExtraHours);
     }
-    public void queryWorkerDataByID(){
+    public static void queryWorkerDataByID(){
         jComboBoxWorkerId.addActionListener(e -> {
             String numWorker = ""+jComboBoxWorkerId.getSelectedItem();
-            int num = Integer.parseInt(numWorker);
+            worker.setIdWorker(Integer.parseInt(numWorker));
             try {
-                query.getWorkerById(num);
-                Worker workerById = query.getWorkerById(num);
+                operations.getWorkerById(worker.getIdWorker());
+                Worker workerById = operations.getWorkerById(worker.getIdWorker());
                 jTextFieldWorkerName.setText(workerById.getName());
                 jTextFieldWorkerSection.setText("" + workerById.getSectionName());
                 jTextFieldWorkerOpLevel.setText("" + workerById.getOperatorLevel());
@@ -153,27 +154,28 @@ public class QueryFunctionPanels extends JPanel {
             }
         });
     }
-    /*public static void fillCalendarColours(){
-        Operations queryBadBoyData = new Operations();
+    public static void fillCalendarColours(){
+        String day;
         try {
             for(int i=0;i<12;i++){
-                int dias= diasMes(2023,i+1);
-                int z = zeller(2023, i+1);
-                int contador=0;
+                int monthDays= CalendarFunctions.monthDays(2023,i+1);
+                int z = CalendarFunctions.zeller(2023, i+1);
+                int count=0;
                 for(int k=0;k<z;k++) {
-                    contador++;
+                    count++;
                 }
-                for(int m=1; m<=dias; m++){
-                    MonthPanels.daysButton[i][m+z+1].setBackground(queryBadBoyData.fillBadBoyCalendarColours(Integer.parseInt(QueryFunctionPanels.jComboBoxIdBadBoys.getSelectedItem().toString()), "2023-" + (String.format("%02d", i + 1)) + "-" + (String.format("%02d", m)) + ""));
+                for(int m=1; m<=monthDays; m++){
+                    day = "2023-" + (String.format("%02d", i + 1)) + "-" + (String.format("%02d", m)) + "";
+                    MonthPanels.daysButton[i][m+z+1].setBackground(operations.fillWorkerCalendarColours(worker.getIdWorker(), day));
                 }
             }
         }catch (SQLException e){
             System.err.println("Something has gone wrong with data base " + e.getMessage());
         }
-    }*/
-    public void queryWorkerID(){
+    }
+    public static void queryWorkerID(){
         try {
-            ArrayList<Integer> id = query.getWorkerId();
+            ArrayList<Integer> id = operations.getWorkerId();
             for(int i=0;i<id.size();i++) {
                 jComboBoxWorkerId.addItem(id.get(i));
             }
@@ -202,13 +204,23 @@ public class QueryFunctionPanels extends JPanel {
         }
         return validHour;
     }
-    public static void setTypeOfDay(){
+    public static void setTypeOfFreeDay(){
         if(jRadioButtonHolydays.isSelected()){ Schedule.freeDay = "Holidays";
         }else if(jRadioButtonMedic.isSelected()){ Schedule.freeDay = "Medic";
         }else if(jRadioButtonAgreement.isSelected()){ Schedule.freeDay = "Agreement";
         }else if(jRadioButtonOwnBusiness.isSelected()){ Schedule.freeDay = "Own Business";
         }else{ Schedule.freeDay = "";
         }
+    }
+    public static void setTypeOfDay() {
+        if (jRadioButtonExtra.isSelected()) Schedule.extraHour = "Yes";
+        else Schedule.extraHour = StringUtils.EMPTY;
+        if (jRadioButtonProfSickLeave.isSelected()) Schedule.profsickleave = "Yes";
+        else Schedule.profsickleave = StringUtils.EMPTY;
+        if (jRadioButtonFestive.isSelected()) Schedule.festive = "Yes";
+        else Schedule.festive = StringUtils.EMPTY;
+        if (jRadioButtonCeased.isSelected()) Schedule.ceased = "Yes";
+        else Schedule.ceased = StringUtils.EMPTY;
     }
 
     /*public void checkNextBadBoyExtraHours(JPanel panel, String day){

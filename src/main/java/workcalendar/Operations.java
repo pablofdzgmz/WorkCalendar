@@ -198,11 +198,11 @@ public class Operations {
         }
     }
     public void checkSchedule(String entryHour, String exitHour){
-        if (entryHour.equalsIgnoreCase("06:00:00")) QueryFunctionPanels.jRadioButtonMorning.setSelected(true);
-        else if (entryHour.equalsIgnoreCase("14:00:00")) QueryFunctionPanels.jRadioButtonAfternoon.setSelected(true);
-        else if (entryHour.equalsIgnoreCase("22:00:00")) QueryFunctionPanels.jRadioButtonNight.setSelected(true);
-        else if (entryHour.equalsIgnoreCase("08:00:00")) QueryFunctionPanels.jRadioButtonWhistle.setSelected(true);
-        else if (entryHour.equalsIgnoreCase("")) QueryFunctionPanels.scheduleButtonGroup.clearSelection();
+        if (entryHour.equalsIgnoreCase(Schedule.MORROW_SCHEDULE[0])) QueryFunctionPanels.jRadioButtonMorning.setSelected(true);
+        else if (entryHour.equalsIgnoreCase(Schedule.AFTERNOON_SCHEDULE[0])) QueryFunctionPanels.jRadioButtonAfternoon.setSelected(true);
+        else if (entryHour.equalsIgnoreCase(Schedule.NIGHT_SCHEDULE[0])) QueryFunctionPanels.jRadioButtonNight.setSelected(true);
+        else if (entryHour.equalsIgnoreCase(Schedule.WHISTLES_SCHEDULE[0])) QueryFunctionPanels.jRadioButtonWhistle.setSelected(true);
+        else if (entryHour.equalsIgnoreCase(StringUtils.EMPTY)) QueryFunctionPanels.scheduleButtonGroup.clearSelection();
     }
     public void checkTypeOfDay(String currentTypeOfDay){
         if (currentTypeOfDay.equalsIgnoreCase("Holidays")) QueryFunctionPanels.jRadioButtonHolydays.setSelected(true);
@@ -232,10 +232,10 @@ public class Operations {
             currentEntryHour = resultSetRecordCount.getString(2);
         }
         if (recordCount != 0) {
-            if (currentEntryHour.equalsIgnoreCase("06:00:00")) dayColour = Schedule.MORNING_DAY_COLOR;
-            else if (currentEntryHour.equalsIgnoreCase("14:00:00")) dayColour = Schedule.AFTERNOON_DAY_COLOR;
-            else if (currentEntryHour.equalsIgnoreCase("22:00:00")) dayColour = Schedule.NIGHT_DAY_COLOR;
-            else if (currentEntryHour.equalsIgnoreCase("08:00:00")) dayColour = Schedule.WHISTLES_DAY_COLOR;
+            if (currentEntryHour.equalsIgnoreCase(Schedule.MORROW_SCHEDULE[0])) dayColour = Schedule.MORNING_DAY_COLOR;
+            else if (currentEntryHour.equalsIgnoreCase(Schedule.AFTERNOON_SCHEDULE[0])) dayColour = Schedule.AFTERNOON_DAY_COLOR;
+            else if (currentEntryHour.equalsIgnoreCase(Schedule.NIGHT_SCHEDULE[0])) dayColour = Schedule.NIGHT_DAY_COLOR;
+            else if (currentEntryHour.equalsIgnoreCase(Schedule.WHISTLES_SCHEDULE[0])) dayColour = Schedule.WHISTLES_DAY_COLOR;
         }
         return dayColour;
     }
