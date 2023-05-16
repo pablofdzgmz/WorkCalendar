@@ -242,10 +242,10 @@ public class QueryFunctionPanels extends JPanel {
         JComboBox scheduleOption = new JComboBox(scheduleAndGroup);
         option = JOptionPane.showConfirmDialog(this, scheduleOption,"Select Schedule and Group", JOptionPane.YES_NO_CANCEL_OPTION);
         if(option==JOptionPane.OK_OPTION) {
-            if(scheduleOption.getSelectedIndex()==0) Schedule.fillFourthTurnCalendar2023(2);
-            else if(scheduleOption.getSelectedIndex()==1) Schedule.fillFourthTurnCalendar2023(4);
-            else if(scheduleOption.getSelectedIndex()==2) Schedule.fillFourthTurnCalendar2023(6);
-            else if(scheduleOption.getSelectedIndex()==3) Schedule.fillFourthTurnCalendar2023(9);
+            if(scheduleOption.getSelectedIndex()==0) Schedule.fillFourthTurnCalendar2023(2,1);
+            else if(scheduleOption.getSelectedIndex()==1) Schedule.fillFourthTurnCalendar2023(2,2);
+            else if(scheduleOption.getSelectedIndex()==2) Schedule.fillFourthTurnCalendar2023(2,3);
+            else if(scheduleOption.getSelectedIndex()==3) Schedule.fillFourthTurnCalendar2023(2, 4);
             else if(scheduleOption.getSelectedIndex()==4) Schedule.fillWhistleTurnCalendar2023();
             JOptionPane.showMessageDialog(null,"Turn added successfully!","¡ Great !",JOptionPane.INFORMATION_MESSAGE);
         }

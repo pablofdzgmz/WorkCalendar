@@ -23,10 +23,10 @@ public class Schedule {
     public Schedule(){
 
     }
-    public static void fillFourthTurnCalendar2023(int groupDay) {
+    public static void fillFourthTurnCalendar2023(int groupDay, int groupWeek) {
         int countDay = groupDay;
         int restDay = 7;
-        int week = 1;
+        int week = groupWeek;
         do {
             if (week == 1) { firstWeek(restDay, countDay); week = 2;
             } else if (week == 2) { secondWeek(restDay, countDay); week = 3;
@@ -113,9 +113,8 @@ public class Schedule {
     }
     public static void addDayToDataBase(String day, String entryHour, String exitHour){
         Operations operations = new Operations();
-        Worker worker = new Worker(Integer.parseInt(QueryFunctionPanels.jComboBoxWorkerId.getSelectedItem().toString()),QueryFunctionPanels.jTextFieldWorkerName.getText(), QueryFunctionPanels.jTextFieldWorkerSection.getText(), Integer.parseInt(QueryFunctionPanels.jTextFieldWorkerOpLevel.getText()));
         try {
-            operations.addDayToDataBaseQuery(worker.getIdWorker(), worker.getSectionName(), day, entryHour , exitHour,"","","","", "");
+            operations.addDayToDataBaseQuery(Worker.idWorker, Worker.sectionName, day, entryHour , exitHour,"","","","", "");
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null,"¡ Error al construir calendario !","¡ Error !",JOptionPane.ERROR_MESSAGE);
             System.err.println("Something has gone wrong with data base " + e.getMessage());
