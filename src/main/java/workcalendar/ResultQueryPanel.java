@@ -55,12 +55,12 @@ public class ResultQueryPanel {
             int con = 0;
             while(result.next()) {
                 data[con][0] = "" + result.getInt(1);
-                data[con][1] = "" + result.getInt(2);
+                data[con][1] = "" + result.getString(2);
                 data[con][2] = "" + result.getString(3);
                 data[con][3] = "" + result.getInt(4);
                 con++;
             }
-            String[] header = {"ID Woker", "Section", "Name", "Extra Hours"};
+            String[] header = {"ID Worker", "Section", "Name", "Extra Hours"};
             JTable table = new JTable(data, header);
             panel.add(new JScrollPane(table));
         }
@@ -80,7 +80,7 @@ public class ResultQueryPanel {
             }
             String dayBeforeOfExtraHours = "2023-" + String.format("%02d",month) + "-" + String.format("%02d",day);
             return "SELECT DISTINCT f.idworker, section.name, f.name, hours.extrahours FROM worker AS f " +
-                    "INNER JOIN hours ON f.idworker=hours.idwoker " +
+                    "INNER JOIN hours ON f.idworker=hours.idworker " +
                     "INNER JOIN schedule ON f.idworker=schedule.idworker " +
                     "INNER JOIN section ON f.section=section.idsection " +
                     "WHERE NOT EXISTS (SELECT * FROM schedule AS d WHERE f.idworker=d.idworker AND d.day='" + dayOfExtraHours + "') " +
@@ -89,7 +89,7 @@ public class ResultQueryPanel {
                     "ORDER BY hours.extrahours ASC;";
         }else{
             return "SELECT DISTINCT f.idworker, section.name, f.name, hours.extrahours FROM worker AS f " +
-                    "INNER JOIN hours ON f.idworker=horas.idworker " +
+                    "INNER JOIN hours ON f.idworker=hours.idworker " +
                     "INNER JOIN schedule ON f.idworker=schedule.idworker " +
                     "INNER JOIN section ON f.section=section.idsection " +
                     "WHERE NOT EXISTS (SELECT * FROM schedule AS d WHERE f.idworker=d.idworker AND d.day='" + dayOfExtraHours + "') ORDER BY hours.extrahours ASC";

@@ -126,7 +126,7 @@ public class QueryFunctionPanels extends JPanel {
     }
     public void setBadBoyQueryComponents(){
         jButtonAddFullCalendar = new JButton("Add full new calendar");
-        jButtonAddFullCalendar.addActionListener(e -> Schedule.fillFourthTurnCalendar2023());
+        jButtonAddFullCalendar.addActionListener(e -> checkScheduleAndGroup());
         jButtonWhoNextExtra = new JButton("Next worker for extra hours");
         jButtonWhoNextExtra.addActionListener(e -> checkNextBadBoyExtraHours(QueryFunctionPanels.queryPanel, jTextFieldCheckDayForExtraHours.getText()));
         jTextFieldCheckDayForExtraHours = new JTextField("");
@@ -235,5 +235,17 @@ public class QueryFunctionPanels extends JPanel {
         } catch (SQLException e) {
             System.err.println("Something has gone wrong with data base " + e.getMessage());
         }
+    }
+    public void checkScheduleAndGroup(){
+        int option = 0;
+        String []scheduleAndGroup = {"4th Turn Group A", "4th Turn Group B","4th Turn Group C", "4th Turn Group D", "Whistles"};
+        JComboBox scheduleOption = new JComboBox(scheduleAndGroup);
+        option = JOptionPane.showConfirmDialog(this, scheduleOption,"Select Schedule and Group", JOptionPane.DEFAULT_OPTION);
+        if(option==0) Schedule.fillFourthTurnCalendar2023(2);
+        else if(option==1) Schedule.fillFourthTurnCalendar2023(4);
+        else if(option==2) Schedule.fillFourthTurnCalendar2023(6);
+        else if(option==3) Schedule.fillFourthTurnCalendar2023(9);
+        else if(option==4) Schedule.fillWhistleTurnCalendar2023();
+        fillCalendarColours();
     }
 }

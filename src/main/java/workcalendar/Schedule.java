@@ -23,8 +23,8 @@ public class Schedule {
     public Schedule(){
 
     }
-    public static void fillFourthTurnCalendar2023() {
-        int countDay = 1;
+    public static void fillFourthTurnCalendar2023(int groupDay) {
+        int countDay = groupDay;
         int restDay = 7;
         int week = 1;
         do {
@@ -37,7 +37,7 @@ public class Schedule {
         } while (countDay < 366);
     }
     public static void fillWhistleTurnCalendar2023(){
-        int countDay = 1;
+        int countDay = 2;
         int restDay = 7;
         do {
             whistleWeek(restDay, countDay);
