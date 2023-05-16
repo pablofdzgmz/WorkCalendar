@@ -240,12 +240,15 @@ public class QueryFunctionPanels extends JPanel {
         int option = 0;
         String []scheduleAndGroup = {"4th Turn Group A", "4th Turn Group B","4th Turn Group C", "4th Turn Group D", "Whistles"};
         JComboBox scheduleOption = new JComboBox(scheduleAndGroup);
-        option = JOptionPane.showConfirmDialog(this, scheduleOption,"Select Schedule and Group", JOptionPane.DEFAULT_OPTION);
-        if(option==0) Schedule.fillFourthTurnCalendar2023(2);
-        else if(option==1) Schedule.fillFourthTurnCalendar2023(4);
-        else if(option==2) Schedule.fillFourthTurnCalendar2023(6);
-        else if(option==3) Schedule.fillFourthTurnCalendar2023(9);
-        else if(option==4) Schedule.fillWhistleTurnCalendar2023();
+        option = JOptionPane.showConfirmDialog(this, scheduleOption,"Select Schedule and Group", JOptionPane.YES_NO_CANCEL_OPTION);
+        if(option==JOptionPane.OK_OPTION) {
+            if(scheduleOption.getSelectedIndex()==0) Schedule.fillFourthTurnCalendar2023(2);
+            else if(scheduleOption.getSelectedIndex()==1) Schedule.fillFourthTurnCalendar2023(4);
+            else if(scheduleOption.getSelectedIndex()==2) Schedule.fillFourthTurnCalendar2023(6);
+            else if(scheduleOption.getSelectedIndex()==3) Schedule.fillFourthTurnCalendar2023(9);
+            else if(scheduleOption.getSelectedIndex()==4) Schedule.fillWhistleTurnCalendar2023();
+            JOptionPane.showMessageDialog(null,"Turn added successfully!","¡ Great !",JOptionPane.INFORMATION_MESSAGE);
+        }
         fillCalendarColours();
     }
 }
