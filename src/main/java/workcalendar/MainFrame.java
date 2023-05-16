@@ -10,7 +10,7 @@ public class MainFrame extends JFrame {
         setSize(shared.screenWidth, shared.screenHeight);
         setLocation(shared.screenWidth -shared.screenWidth +50, shared.screenHeight -shared.screenHeight +50);
         setResizable(false);
-        setTitle("Calendario laboral 2023");
+        setTitle("Work Calendar 2023");
         MonthPanels panelMonth = new MonthPanels(2023);
         QueryFunctionPanels panelQuery = new QueryFunctionPanels();
         mainPanel.add(panelMonth);

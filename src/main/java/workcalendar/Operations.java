@@ -45,7 +45,7 @@ public class Operations {
     public void addDayToDataBaseQuery(int idworker, String section, String day, String entryHour, String exitHour, String extraHour, String freeday, String profsickleave, String festive, String ceased) throws SQLException {
         Connection conn = myConnection.getMyConnection();
         int recordCount = 0;
-        String queryIsDayBusy = "SELECT COUNT(*) FROM schedule WHERE idworker=? AND dia=?";
+        String queryIsDayBusy = "SELECT COUNT(*) FROM schedule WHERE idworker=? AND day=?";
         PreparedStatement queryRecordCount = conn.prepareStatement(queryIsDayBusy);
         queryRecordCount.setInt(1, idworker);
         queryRecordCount.setString(2, day);

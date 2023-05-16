@@ -1,11 +1,11 @@
 package workcalendar;
 
 public class Worker {
-    private int idWorker;
-    private String name;
-    private int section;
-    private String sectionName;
-    private int operatorLevel;
+    public static int idWorker;
+    public static String name;
+    public static int section;
+    public static String sectionName;
+    public static int operatorLevel;
 
     public Worker(int idWorker, String name, int section, int operatorLevel) {
         this.idWorker = idWorker;

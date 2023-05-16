@@ -11,7 +11,10 @@ public class ResultQueryPanel {
         try{
             panel.updateUI();
             Connection conn = myConnection.getMyConnection();
-            String code = "SELECT worker.idworker,worker.name,section.name,worker.operatorlevel,schedule.day,schedule.entryhour,schedule.exithour,schedule.extrahour,schedule.profsickleave,schedule.festive,schedule.freeday,schedule.ceased FROM worker INNER JOIN schedule ON worker.idworker=schedule.idworker WHERE day='" + day + "' ORDER BY schedule.entryhour";
+            String code = "SELECT worker.idworker,worker.name,section.name,worker.operatorlevel,schedule.day,schedule.entryhour,schedule.exithour," +
+                    "schedule.extrahour,schedule.profsickleave,schedule.festive,schedule.freeday,schedule.ceased FROM worker " +
+                    "INNER JOIN schedule ON worker.idworker=schedule.idworker " +
+                    "INNER JOIN section ON worker.section=section.idsection WHERE day='" + day + "' ORDER BY schedule.entryhour";
             Statement statement = conn.createStatement();
             ResultSet result = statement.executeQuery(code);
             // Data to be displayed in the JTable
@@ -76,10 +79,10 @@ public class ResultQueryPanel {
                 day-=1;
             }
             String dayBeforeOfExtraHours = "2023-" + String.format("%02d",month) + "-" + String.format("%02d",day);
-            return "SELECT DISTINCT f.idworker, section.name, f.nombre, hours.extrahours FROM worker AS f " +
+            return "SELECT DISTINCT f.idworker, section.name, f.name, hours.extrahours FROM worker AS f " +
                     "INNER JOIN hours ON f.idworker=hours.idwoker " +
                     "INNER JOIN schedule ON f.idworker=schedule.idworker " +
-                    "INNER JOIN section ON f.idworker=section.idworker " +
+                    "INNER JOIN section ON f.section=section.idsection " +
                     "WHERE NOT EXISTS (SELECT * FROM schedule AS d WHERE f.idworker=d.idworker AND d.day='" + dayOfExtraHours + "') " +
                     "OR EXISTS (SELECT * FROM schedule AS d WHERE f.idworker=d.idworker AND d.day='" + dayBeforeOfExtraHours + "' AND d.exithour!='22:00:00' " +
                     "           AND NOT EXISTS (SELECT * FROM schedule AS h WHERE d.idworker=h.idworker AND h.day='" + dayOfExtraHours + "')) " +
@@ -88,7 +91,7 @@ public class ResultQueryPanel {
             return "SELECT DISTINCT f.idworker, section.name, f.name, hours.extrahours FROM worker AS f " +
                     "INNER JOIN hours ON f.idworker=horas.idworker " +
                     "INNER JOIN schedule ON f.idworker=schedule.idworker " +
-                    "INNER JOIN section ON f.idworker=section.idworker " +
+                    "INNER JOIN section ON f.section=section.idsection " +
                     "WHERE NOT EXISTS (SELECT * FROM schedule AS d WHERE f.idworker=d.idworker AND d.day='" + dayOfExtraHours + "') ORDER BY hours.extrahours ASC";
         }
     }

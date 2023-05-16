@@ -10,7 +10,6 @@ import static workcalendar.CalendarFunctions.monthDays;
 import static workcalendar.CalendarFunctions.zeller;
 
 public class MonthPanels extends JPanel {
-    Worker worker = new Worker();
     Operations operations = new Operations();
     SharedVariables shared = new SharedVariables();
     public JPanel panel12Months[] = new JPanel[12];
@@ -60,11 +59,11 @@ public class MonthPanels extends JPanel {
                             editDayFromDataBase(finalI,finalM,finalZ);
                             setDayScheduleToTable(QueryFunctionPanels.queryPanel, day);
                         }else if (QueryFunctionPanels.jToggleButtonDeleteDay.isSelected()){
-                            deleteDayFromDataBase(worker.getIdWorker(), day);
+                            deleteDayFromDataBase(Worker.idWorker, day);
                             setDayScheduleToTable(QueryFunctionPanels.queryPanel, day);
                         }else if(!QueryFunctionPanels.jToggleButtonAddDay.isSelected() && !QueryFunctionPanels.jToggleButtonEditDay.isSelected() && !QueryFunctionPanels.jToggleButtonDeleteDay.isSelected()){
-                            QueryFunctionPanels.setTypeOfFreeDay(); QueryFunctionPanels.setTypeOfDay();
-                            setDayTypesFromDataBase(worker.getIdWorker(), day);
+                            //QueryFunctionPanels.setTypeOfFreeDay(); QueryFunctionPanels.setTypeOfDay();
+                            setDayTypesFromDataBase(Worker.idWorker, day);
                             setDayScheduleToTable(QueryFunctionPanels.queryPanel, day);
                         }
                     }
@@ -83,7 +82,7 @@ public class MonthPanels extends JPanel {
         try {
             String day = "2023-" + (String.format("%02d", i+1)) + "-" + (String.format("%02d" , m)) + "";
             if(QueryFunctionPanels.setEntryExitHour()) {
-                operations.addDayToDataBaseQuery(worker.getIdWorker(), worker.getSectionName(), day, Schedule.entryHour, Schedule.exitHour, Schedule.extraHour, Schedule.freeDay, Schedule.profsickleave, Schedule.festive, Schedule.ceased);
+                operations.addDayToDataBaseQuery(Worker.idWorker, Worker.sectionName, day, Schedule.entryHour, Schedule.exitHour, Schedule.extraHour, Schedule.freeDay, Schedule.profsickleave, Schedule.festive, Schedule.ceased);
                 QueryFunctionPanels.fillCalendarColours();
             }
             else{
@@ -96,7 +95,7 @@ public class MonthPanels extends JPanel {
     }
     public void deleteDayFromDataBase(int idWorker, String workDay){
         try {
-            int optionPane = JOptionPane.showConfirmDialog(null, "Do you wish to remove " + workDay + " from Worker " + worker.getName() + " ?", "Confirm delete", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+            int optionPane = JOptionPane.showConfirmDialog(null, "Do you wish to remove " + workDay + " from Worker " + Worker.name + " ?", "Confirm delete", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
             if(optionPane == 0) {
                 operations.deleteDayFromDataBase(idWorker, workDay);
                 JOptionPane.showMessageDialog(null, "Day " + workDay + " deleted", "¡ Done !", JOptionPane.ERROR_MESSAGE);
@@ -113,7 +112,7 @@ public class MonthPanels extends JPanel {
         try {
             String day = "2023-" + (String.format("%02d", i+1)) + "-" + (String.format("%02d" , m)) + "";
             if(QueryFunctionPanels.setEntryExitHour()) {
-                operations.updateDayToDataBaseQuery(worker.getIdWorker(), worker.getSectionName(), day, Schedule.entryHour, Schedule.exitHour, Schedule.extraHour, Schedule.freeDay, Schedule.profsickleave, Schedule.festive, Schedule.ceased);
+                operations.updateDayToDataBaseQuery(Worker.idWorker, Worker.sectionName, day, Schedule.entryHour, Schedule.exitHour, Schedule.extraHour, Schedule.freeDay, Schedule.profsickleave, Schedule.festive, Schedule.ceased);
                 QueryFunctionPanels.fillCalendarColours();
             }
             else{

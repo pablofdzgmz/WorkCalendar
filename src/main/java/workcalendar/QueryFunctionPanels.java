@@ -8,7 +8,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class QueryFunctionPanels extends JPanel {
-    public static Worker worker = new Worker();
     public static Operations operations = new Operations();
     public static JPanel queryPanel = new JPanel();
     public JPanel functionMainPanel = new JPanel();
@@ -127,9 +126,9 @@ public class QueryFunctionPanels extends JPanel {
     }
     public void setBadBoyQueryComponents(){
         jButtonAddFullCalendar = new JButton("Add full new calendar");
-        //jButtonAddFullCalendar.addActionListener(e -> FillNewCalendar.fillBadBoyCalendar2023());
+        jButtonAddFullCalendar.addActionListener(e -> Schedule.fillFourthTurnCalendar2023());
         jButtonWhoNextExtra = new JButton("Next worker for extra hours");
-        //jButtonWhoNextExtra.addActionListener(e -> checkNextBadBoyExtraHours(QueryFunctionPanels.queryPanel, jTextFieldCheckDayForExtraHours.getText()));
+        jButtonWhoNextExtra.addActionListener(e -> checkNextBadBoyExtraHours(QueryFunctionPanels.queryPanel, jTextFieldCheckDayForExtraHours.getText()));
         jTextFieldCheckDayForExtraHours = new JTextField("");
         jTextFieldCheckDayForExtraHours.setSize(12,2);jTextFieldCheckDayForExtraHours.setEditable(false);
     }
@@ -141,14 +140,14 @@ public class QueryFunctionPanels extends JPanel {
     public static void queryWorkerDataByID(){
         jComboBoxWorkerId.addActionListener(e -> {
             String numWorker = ""+jComboBoxWorkerId.getSelectedItem();
-            worker.setIdWorker(Integer.parseInt(numWorker));
+            Worker.idWorker = (Integer.parseInt(numWorker));
             try {
-                operations.getWorkerById(worker.getIdWorker());
-                Worker workerById = operations.getWorkerById(worker.getIdWorker());
+                operations.getWorkerById(Worker.idWorker);
+                Worker workerById = operations.getWorkerById(Worker.idWorker);
                 jTextFieldWorkerName.setText(workerById.getName());
                 jTextFieldWorkerSection.setText("" + workerById.getSectionName());
                 jTextFieldWorkerOpLevel.setText("" + workerById.getOperatorLevel());
-                //fillCalendarColours();
+                fillCalendarColours();
             } catch (SQLException | NumberFormatException ex ) {
                 throw new RuntimeException(ex);
             }
@@ -166,7 +165,7 @@ public class QueryFunctionPanels extends JPanel {
                 }
                 for(int m=1; m<=monthDays; m++){
                     day = "2023-" + (String.format("%02d", i + 1)) + "-" + (String.format("%02d", m)) + "";
-                    MonthPanels.daysButton[i][m+z+1].setBackground(operations.fillWorkerCalendarColours(worker.getIdWorker(), day));
+                    MonthPanels.daysButton[i][m+z+1].setBackground(operations.fillWorkerCalendarColours(Worker.idWorker, day));
                 }
             }
         }catch (SQLException e){
@@ -223,18 +222,18 @@ public class QueryFunctionPanels extends JPanel {
         else Schedule.ceased = StringUtils.EMPTY;
     }
 
-    /*public void checkNextBadBoyExtraHours(JPanel panel, String day){
+    public void checkNextBadBoyExtraHours(JPanel panel, String day){
         ResultQueryPanel resultQueryPanel = new ResultQueryPanel(panel);
         panel.removeAll();
         try {
             if(QueryFunctionPanels.setEntryExitHour() && !day.equalsIgnoreCase(StringUtils.EMPTY)) {
-                resultQueryPanel.checkNextBadBoyExtraHours(panel, day, QueryFunctionPanels.entryHour);
+                resultQueryPanel.checkNextWorkerExtraHours(panel, day, Schedule.entryHour);
             }
             else{
-                JOptionPane.showMessageDialog(null,"¡ Debes seleccionar un horario y un dia !","¡ Error !",JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null,"You have to choose schedule!","¡ Error !",JOptionPane.ERROR_MESSAGE);
             }
         } catch (SQLException e) {
             System.err.println("Something has gone wrong with data base " + e.getMessage());
         }
-    }*/
+    }
 }
