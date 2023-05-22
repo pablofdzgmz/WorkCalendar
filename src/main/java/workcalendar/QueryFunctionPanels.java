@@ -4,8 +4,10 @@ import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 
 public class QueryFunctionPanels extends JPanel {
     public static Operations operations = new Operations();
@@ -21,7 +23,7 @@ public class QueryFunctionPanels extends JPanel {
     public static JComboBox jComboBoxWorkerId; // IdBadBoys combobox
     public JLabel jLabelWorkerId, jLabelWorkerName, jLabelWorkerIdSection, JLabelWorkerOpLevel; //Query extra hours panel labels
     public static JTextField jTextFieldWorkerName, jTextFieldWorkerSection, jTextFieldCheckDayForExtraHours, jTextFieldWorkerOpLevel; //Query extra hours text fields
-    public static JButton jButtonAddFullCalendar, jButtonWhoNextExtra;
+    public static JButton jButtonAddFullCalendar, jButtonWhoNextExtra, jButtonAddWorker, jButtonAddSection, jButtonAssignSectionToWorker;
     public QueryFunctionPanels(){
         //setBounds(5, shared.alturaPantalla/2,shared.anchoPantalla-25, shared.alturaPantalla/2 );
         //Main Result Panel
@@ -53,7 +55,7 @@ public class QueryFunctionPanels extends JPanel {
         //Add Panels to Main Panel
         functionMainPanel.add(functionPanel[0]);functionMainPanel.add(functionPanel[1]);functionMainPanel.add(functionPanel[2]);
         add(functionMainPanel);
-        //new ResultQueryPanel(queryPanel);
+        new ResultQueryPanel(queryPanel);
     }
 
     public void setdEditJourneyComponents(){
@@ -131,11 +133,15 @@ public class QueryFunctionPanels extends JPanel {
         jButtonWhoNextExtra.addActionListener(e -> checkNextBadBoyExtraHours(QueryFunctionPanels.queryPanel, jTextFieldCheckDayForExtraHours.getText()));
         jTextFieldCheckDayForExtraHours = new JTextField("");
         jTextFieldCheckDayForExtraHours.setSize(12,2);jTextFieldCheckDayForExtraHours.setEditable(false);
+        jButtonAddWorker = new JButton("Create new worker into Data Base");
+        jButtonAddWorker.addActionListener(e -> { createNewWorker();});
+        jButtonAddSection = new JButton("Create new section into Data Base");
+        jButtonAssignSectionToWorker = new JButton("Assign Worker to Section");
     }
     public void addBadBoyQueryComponents(){
-        functionPanel[2].add(jButtonAddFullCalendar);
-        functionPanel[2].add(jButtonWhoNextExtra);
-        functionPanel[2].add(jTextFieldCheckDayForExtraHours);
+        functionPanel[2].add(jButtonAddFullCalendar); functionPanel[2].add(jButtonAddWorker);
+        functionPanel[2].add(jButtonWhoNextExtra); functionPanel[2].add(jButtonAddSection);
+        functionPanel[2].add(jTextFieldCheckDayForExtraHours); functionPanel[2].add(jButtonAssignSectionToWorker);
     }
     public static void queryWorkerDataByID(){
         jComboBoxWorkerId.addActionListener(e -> {
@@ -240,7 +246,7 @@ public class QueryFunctionPanels extends JPanel {
         int option = 0;
         String []scheduleAndGroup = {"4th Turn Group A", "4th Turn Group B","4th Turn Group C", "4th Turn Group D", "Whistles"};
         JComboBox scheduleOption = new JComboBox(scheduleAndGroup);
-        option = JOptionPane.showConfirmDialog(this, scheduleOption,"Select Schedule and Group", JOptionPane.YES_NO_CANCEL_OPTION);
+        option = JOptionPane.showConfirmDialog(null, scheduleOption,"Select Schedule and Group", JOptionPane.YES_NO_CANCEL_OPTION);
         if(option==JOptionPane.OK_OPTION) {
             if(scheduleOption.getSelectedIndex()==0) Schedule.fillFourthTurnCalendar2023(2,1);
             else if(scheduleOption.getSelectedIndex()==1) Schedule.fillFourthTurnCalendar2023(2,2);
@@ -250,5 +256,102 @@ public class QueryFunctionPanels extends JPanel {
             JOptionPane.showMessageDialog(null,"Turn added successfully!","¡ Great !",JOptionPane.INFORMATION_MESSAGE);
         }
         fillCalendarColours();
+    }
+    public void createNewWorker(){
+        String workerName;
+        int sectionID;
+        int operatorLevel;
+        int workerID = askForWorkerID();
+        if(workerID != 0) {
+            workerName = askForWorkerName();
+            if(!workerName.equalsIgnoreCase(StringUtils.EMPTY)) {
+                sectionID = askForSectionID();
+                if(sectionID != 0) {
+                    operatorLevel = askForOperatorLevel();
+                    try {
+                        operations.addNewWorker(workerID,workerName,sectionID,operatorLevel);
+                    } catch (SQLException e) {
+                        JOptionPane.showMessageDialog(null," You can't add that worker !","¡ Error !",JOptionPane.ERROR_MESSAGE);
+                        System.err.println("Something has gone wrong with data base " + e.getMessage());
+                    }
+                }
+            }
+        }
+    }
+    public int askForWorkerID(){
+        boolean validID = false;
+        int workerID = 0;
+        int option = 0;
+        JTextField jTextFieldWorkerId = new JTextField();
+        do{
+            try{
+                option = JOptionPane.showConfirmDialog(null, jTextFieldWorkerId,"Insert Worker ID ", JOptionPane.YES_NO_CANCEL_OPTION);
+                if(option==JOptionPane.OK_OPTION){
+                    if(((int)(Math.log10(Integer.parseInt(jTextFieldWorkerId.getText()))+1)) == 8) {
+                        validID = true;
+                        workerID = Integer.parseInt(jTextFieldWorkerId.getText());
+                    }else throw new InputMismatchException();
+                }else{
+                    JOptionPane.showMessageDialog(null,"Create new worker canceled ! "," Canceled !",JOptionPane.ERROR_MESSAGE);
+                    validID = true;
+                }
+            }catch (NumberFormatException | InputMismatchException e){
+                JOptionPane.showMessageDialog(null,"Only 8 digits allowed [0-9] ! "," Error !",JOptionPane.ERROR_MESSAGE);
+            }
+        }while(!validID);
+        return workerID;
+    }
+    public String askForWorkerName(){
+        boolean validName = false;
+        String workerName = StringUtils.EMPTY;
+        int option = 0;
+        JTextField jTextFieldWorkerName = new JTextField();
+        do{
+            try{
+                option = JOptionPane.showConfirmDialog(null, jTextFieldWorkerName,"Insert Worker Name ", JOptionPane.YES_NO_CANCEL_OPTION);
+                if(option==JOptionPane.OK_OPTION){
+                    if(jTextFieldWorkerName.getText().matches("^[A-z]+\\s[A-z]*$")) {
+                            validName = true;
+                            workerName = jTextFieldWorkerName.getText();
+                    }else throw new InputMismatchException();
+                }else{
+                    JOptionPane.showMessageDialog(null,"Create new worker canceled ! "," Canceled !",JOptionPane.ERROR_MESSAGE);
+                    validName = true;
+                }
+            }catch (InputMismatchException e){
+                JOptionPane.showMessageDialog(null,"Only characters allowed [a-Z] ! "," Error !",JOptionPane.ERROR_MESSAGE);
+            }
+        }while(!validName);
+        return workerName;
+    }
+    public int askForSectionID(){
+        int sectionID = 0;
+        int option = 0;
+        String []section = {"1.- Logistica", "2.- Laboratorio","3.- Recursos humanos", "4.- Administracion", "5.- Informatica","6.- Produccion"};
+        JComboBox sectionOption = new JComboBox(section);
+        option = JOptionPane.showConfirmDialog(null, sectionOption,"Select section", JOptionPane.YES_NO_CANCEL_OPTION);
+        if(option==JOptionPane.OK_OPTION) {
+            if(sectionOption.getSelectedIndex()==0) sectionID = 1;
+            else if(sectionOption.getSelectedIndex()==1) sectionID = 2;
+            else if(sectionOption.getSelectedIndex()==2) sectionID = 3;
+            else if(sectionOption.getSelectedIndex()==3) sectionID = 4;
+            else if(sectionOption.getSelectedIndex()==4) sectionID = 5;
+            else if(sectionOption.getSelectedIndex()==6) sectionID = 6;
+        }else
+            JOptionPane.showMessageDialog(null,"Create new worker canceled ! "," Canceled !",JOptionPane.ERROR_MESSAGE);
+        return sectionID;
+    }
+    public int askForOperatorLevel(){
+        int operatorLevel = 0;
+        int option = 0;
+        String []stringOperatorLevel = {"Nivel 1", "Nivel 2","Nivel 3", "Nivel 4", "Nivel 5","Nivel 6","Nivel 7"
+                            ,"Nivel 8","Nivel 9","Nivel 10","Nivel 11","Nivel 12","Nivel 13","Nivel 14"};
+        JComboBox operatorLevelOption = new JComboBox(stringOperatorLevel);
+        option = JOptionPane.showConfirmDialog(null, operatorLevelOption,"Select operator level", JOptionPane.YES_NO_CANCEL_OPTION);
+        if(option==JOptionPane.OK_OPTION) {
+            operatorLevel = operatorLevelOption.getSelectedIndex()+1;
+        }else
+            JOptionPane.showMessageDialog(null,"Create new worker canceled ! "," Canceled !",JOptionPane.ERROR_MESSAGE);
+        return operatorLevel;
     }
 }
