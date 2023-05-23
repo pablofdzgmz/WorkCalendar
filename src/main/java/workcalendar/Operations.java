@@ -263,6 +263,7 @@ public class Operations {
                 queryAddHours.executeUpdate();
                 conn.rollback();
         } else {
+            JOptionPane.showMessageDialog(null," You can't add that worker. ID already in use !"," Error !",JOptionPane.ERROR_MESSAGE);
             throw new SQLException();
         }
     }

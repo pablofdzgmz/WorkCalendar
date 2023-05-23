@@ -86,10 +86,10 @@ public class MonthPanels extends JPanel {
                 QueryFunctionPanels.fillCalendarColours();
             }
             else{
-                JOptionPane.showMessageDialog(null,"You have to choose schedule !","¡ Error !",JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null,"You have to choose schedule !"," Error !",JOptionPane.ERROR_MESSAGE);
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null," You can't add that day !","¡ Error !",JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null," You can't add that day !"," Error !",JOptionPane.ERROR_MESSAGE);
             System.err.println("Something has gone wrong with data base " + e.getMessage());
         }
     }
@@ -98,13 +98,13 @@ public class MonthPanels extends JPanel {
             int optionPane = JOptionPane.showConfirmDialog(null, "Do you wish to remove " + workDay + " from Worker " + Worker.name + " ?", "Confirm delete", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
             if(optionPane == 0) {
                 operations.deleteDayFromDataBase(idWorker, workDay);
-                JOptionPane.showMessageDialog(null, "Day " + workDay + " deleted", "¡ Done !", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Day " + workDay + " deleted", " Done !", JOptionPane.ERROR_MESSAGE);
                 QueryFunctionPanels.fillCalendarColours();
             }else{
-                JOptionPane.showMessageDialog(null, "Day " + workDay + " not removed", "¡ Error !", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Day " + workDay + " not removed", " Error !", JOptionPane.ERROR_MESSAGE);
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null,"You're not working that day !","¡ Error !",JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null,"You're not working that day !"," Error !",JOptionPane.ERROR_MESSAGE);
             System.err.println("Something has gone wrong with data base " + e.getMessage());
         }
     }
@@ -119,7 +119,7 @@ public class MonthPanels extends JPanel {
                 JOptionPane.showMessageDialog(null," You have to choose schedule !","¡ Error !",JOptionPane.ERROR_MESSAGE);
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null,"You cannot edit a not working day ! Pulse 'Add' for add schedule !","¡ Error !",JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null,"You cannot edit a not working day ! Pulse 'Add' for add schedule !"," Error !",JOptionPane.ERROR_MESSAGE);
             System.err.println("Something has gone wrong with data base " + e.getMessage());
         }
     }
@@ -127,7 +127,7 @@ public class MonthPanels extends JPanel {
         try {
             operations.setDayTypeFromDataBase(idWorker, workDay);
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null,"You aren't working that day !","¡ Error !",JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null,"You aren't working that day !"," Error !",JOptionPane.ERROR_MESSAGE);
             System.err.println("Something has gone wrong with data base " + e.getMessage());
         }
     }

@@ -236,7 +236,7 @@ public class QueryFunctionPanels extends JPanel {
                 resultQueryPanel.checkNextWorkerExtraHours(panel, day, Schedule.entryHour);
             }
             else{
-                JOptionPane.showMessageDialog(null,"You have to choose schedule!","¡ Error !",JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null,"You have to choose schedule!"," Error !",JOptionPane.ERROR_MESSAGE);
             }
         } catch (SQLException e) {
             System.err.println("Something has gone wrong with data base " + e.getMessage());
@@ -253,7 +253,7 @@ public class QueryFunctionPanels extends JPanel {
             else if(scheduleOption.getSelectedIndex()==2) Schedule.fillFourthTurnCalendar2023(2,3);
             else if(scheduleOption.getSelectedIndex()==3) Schedule.fillFourthTurnCalendar2023(2, 4);
             else if(scheduleOption.getSelectedIndex()==4) Schedule.fillWhistleTurnCalendar2023();
-            JOptionPane.showMessageDialog(null,"Turn added successfully!","¡ Great !",JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null,"Turn added successfully!"," Great !",JOptionPane.INFORMATION_MESSAGE);
         }
         fillCalendarColours();
     }
@@ -271,7 +271,7 @@ public class QueryFunctionPanels extends JPanel {
                     try {
                         operations.addNewWorker(workerID,workerName,sectionID,operatorLevel);
                     } catch (SQLException e) {
-                        JOptionPane.showMessageDialog(null," You can't add that worker !","¡ Error !",JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(null," You can't add that worker !"," Error !",JOptionPane.ERROR_MESSAGE);
                         System.err.println("Something has gone wrong with data base " + e.getMessage());
                     }
                 }
