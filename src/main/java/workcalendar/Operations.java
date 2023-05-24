@@ -42,91 +42,102 @@ public class Operations {
         }
         return (ArrayList<Integer>) idlist;
     }
-    public void addDayToDataBaseQuery(int idworker, String section, String day, String entryHour, String exitHour, String extraHour, String freeday, String profsickleave, String festive, String ceased) throws SQLException {
+    public ArrayList<String> getSectionName() throws SQLException {
+        List<String> sectionList = new ArrayList<>();
+        Connection conn = myConnection.getMyConnection();
+        Statement statement = conn.createStatement();
+        ResultSet resultSet = statement.executeQuery("SELECT name FROM section");
+        while (resultSet.next()) {
+            String name = resultSet.getString(1);
+            sectionList.add(name);
+        }
+        return (ArrayList<String>) sectionList;
+    }
+    public void addDayToDataBaseQuery(int idWorker, String section, String day, String entryHour, String exitHour, String extraHour, String freeDay, String profSickLeave, String festive, String ceased) throws SQLException {
         Connection conn = myConnection.getMyConnection();
         int recordCount = 0;
         String queryIsDayBusy = "SELECT COUNT(*) FROM schedule WHERE idworker=? AND day=?";
         PreparedStatement queryRecordCount = conn.prepareStatement(queryIsDayBusy);
-        queryRecordCount.setInt(1, idworker);
+        queryRecordCount.setInt(1, idWorker);
         queryRecordCount.setString(2, day);
         ResultSet resultSetRecordCount = queryRecordCount.executeQuery();
         while (resultSetRecordCount.next())
             recordCount = resultSetRecordCount.getInt(1);
         if (recordCount == 0) {
-            if((!freeday.equalsIgnoreCase("") && hasFreeDays(idworker,freeday)) || freeday.equalsIgnoreCase("") ){
+            if((!freeDay.equalsIgnoreCase("") && hasFreeDays(idWorker,freeDay)) || freeDay.equalsIgnoreCase("") ){
                 String insertWorkerJobDay = "INSERT INTO schedule (idworker, section, day, entryhour, exithour, extrahour, freeday, profsickleave, festive, ceased) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
                 PreparedStatement queryWorkerByID = conn.prepareStatement(insertWorkerJobDay);
-                queryWorkerByID.setInt(1, idworker);
+                queryWorkerByID.setInt(1, idWorker);
                 queryWorkerByID.setString(2, section);
                 queryWorkerByID.setString(3, day);
                 queryWorkerByID.setString(4, entryHour);
                 queryWorkerByID.setString(5, exitHour);
                 queryWorkerByID.setString(6, extraHour);
-                queryWorkerByID.setString(7, freeday);
-                queryWorkerByID.setString(8, profsickleave);
+                queryWorkerByID.setString(7, freeDay);
+                queryWorkerByID.setString(8, profSickLeave);
                 queryWorkerByID.setString(9, festive);
                 queryWorkerByID.setString(10, ceased);
                 queryWorkerByID.executeUpdate();
-                if(!extraHour.equalsIgnoreCase(StringUtils.EMPTY) || !freeday.equalsIgnoreCase(StringUtils.EMPTY))
-                    addExtraHoursToTable(idworker, extraHour, freeday);
+                if(!extraHour.equalsIgnoreCase(StringUtils.EMPTY) || !freeDay.equalsIgnoreCase(StringUtils.EMPTY))
+                    addExtraHoursToTable(idWorker, extraHour, freeDay);
             }
         } else {
             throw new SQLException();
         }
     }
-    public void updateDayToDataBaseQuery(int idworker, String section, String day, String entryHour, String exitHour, String extraHour, String freeday, String profsickleave, String festive, String ceased) throws SQLException {
+    public void updateDayToDataBaseQuery(int idWorker, String section, String day, String entryHour, String exitHour, String extraHour, String freeDay, String profSickLeave, String festive, String ceased) throws SQLException {
         Connection conn = myConnection.getMyConnection();
         int recordCount = 0;
         String queryIsDayBusy = "SELECT COUNT(*) FROM schedule WHERE idworker=? and day=?";
         PreparedStatement queryRecordCount = conn.prepareStatement(queryIsDayBusy);
-        queryRecordCount.setInt(1, idworker);
+        queryRecordCount.setInt(1, idWorker);
         queryRecordCount.setString(2, day);
         ResultSet resultSetRecordCount = queryRecordCount.executeQuery();
         while (resultSetRecordCount.next())
             recordCount = resultSetRecordCount.getInt(1);
         if (recordCount == 1) {
-            if((!freeday.equalsIgnoreCase("") && hasFreeDays(idworker,freeday)) || freeday.equalsIgnoreCase("") ){
+            if((!freeDay.equalsIgnoreCase("") && hasFreeDays(idWorker,freeDay)) || freeDay.equalsIgnoreCase("") ){
                 String insertWorkerJobDay = "UPDATE schedule SET idworker=?, section=?, day=?, entryhour=?, exithour=?, extrahour=?, profsickleave=?, festive=?, freeday=?, ceased=? WHERE idworker=? and day=?";
                 PreparedStatement queryWorkerByID = conn.prepareStatement(insertWorkerJobDay);
-                queryWorkerByID.setInt(1, idworker);
+                queryWorkerByID.setInt(1, idWorker);
                 queryWorkerByID.setString(2, section);
                 queryWorkerByID.setString(3, day);
                 queryWorkerByID.setString(4, entryHour);
                 queryWorkerByID.setString(5, exitHour);
                 queryWorkerByID.setString(6, extraHour);
-                queryWorkerByID.setString(7, profsickleave);
+                queryWorkerByID.setString(7, profSickLeave);
                 queryWorkerByID.setString(8, festive);
-                queryWorkerByID.setString(9, freeday);
+                queryWorkerByID.setString(9, freeDay);
                 queryWorkerByID.setString(10, ceased);
-                queryWorkerByID.setInt(11, idworker);
+                queryWorkerByID.setInt(11, idWorker);
                 queryWorkerByID.setString(12, day);
                 queryWorkerByID.executeUpdate();
-                if((!extraHour.equalsIgnoreCase(StringUtils.EMPTY) && !extraHour.equalsIgnoreCase("No")) || !freeday.equalsIgnoreCase(StringUtils.EMPTY))
-                    addExtraHoursToTable(idworker,extraHour,freeday);
+                if((!extraHour.equalsIgnoreCase(StringUtils.EMPTY) && !extraHour.equalsIgnoreCase("No")) || !freeDay.equalsIgnoreCase(StringUtils.EMPTY))
+                    addExtraHoursToTable(idWorker,extraHour,freeDay);
             }
         } else {
             throw new SQLException();
         }
     }
-    private void addExtraHoursToTable(int idworker, String extraHour, String freeday) throws SQLException {
+    private void addExtraHoursToTable(int idWorker, String extraHour, String freeDay) throws SQLException {
         Connection conn = myConnection.getMyConnection();
         String insertHours = StringUtils.EMPTY;
         int hours = 8;
         if(extraHour.equalsIgnoreCase("Yes")){
-            insertHours = "UPDATE hours SET extrahours = extrahours + " + hours + " WHERE hours.idworker = " + idworker + "";
-        }else if(freeday.equalsIgnoreCase("Holidays")) {
-            insertHours = "UPDATE hours SET holidays = a-1 WHERE hours.idworker = " + idworker + "";
-        }else if(freeday.equalsIgnoreCase("Agreement")) {
-            insertHours = "UPDATE hours SET agreement = agreement-1 WHERE hours.idworker = " + idworker + "";
-        }else if(freeday.equalsIgnoreCase("Own Business")) {
-            insertHours = "UPDATE hours SET ownbusiness = ownbusiness-1 WHERE horas.idworker = " + idworker + "";
-        }else if(freeday.equalsIgnoreCase("Medic")) {
-            insertHours = "UPDATE hours SET medic = medic-1 WHERE horas.idworker = " + idworker + "";
+            insertHours = "UPDATE hours SET extrahours = extrahours + " + hours + " WHERE hours.idworker = " + idWorker + "";
+        }else if(freeDay.equalsIgnoreCase("Holidays")) {
+            insertHours = "UPDATE hours SET holidays = a-1 WHERE hours.idworker = " + idWorker + "";
+        }else if(freeDay.equalsIgnoreCase("Agreement")) {
+            insertHours = "UPDATE hours SET agreement = agreement-1 WHERE hours.idworker = " + idWorker + "";
+        }else if(freeDay.equalsIgnoreCase("Own Business")) {
+            insertHours = "UPDATE hours SET ownbusiness = ownbusiness-1 WHERE horas.idworker = " + idWorker + "";
+        }else if(freeDay.equalsIgnoreCase("Medic")) {
+            insertHours = "UPDATE hours SET medic = medic-1 WHERE horas.idworker = " + idWorker + "";
         }
         Statement statement = conn.createStatement();
         statement.executeUpdate(insertHours);
     }
-    private boolean hasFreeDays(int idworker, String freeDayType) throws SQLException{
+    private boolean hasFreeDays(int idWorker, String freeDayType) throws SQLException{
         Connection conn = myConnection.getMyConnection();
         String type = StringUtils.EMPTY;
         if (freeDayType.equalsIgnoreCase("Holidays")) type = "Holidays";
@@ -136,7 +147,7 @@ public class Operations {
         int recordCount = 0;
         String queryHasFreeDay = "SELECT " + type + " FROM horas where idworker = ?";
         PreparedStatement queryRecordCount = conn.prepareStatement(queryHasFreeDay);
-        queryRecordCount.setInt(1, idworker);
+        queryRecordCount.setInt(1, idWorker);
         ResultSet resultSetRecordCount = queryRecordCount.executeQuery();
         while (resultSetRecordCount.next())
             recordCount = resultSetRecordCount.getInt(1);
@@ -145,12 +156,12 @@ public class Operations {
             return false;
         } else return true;
     }
-    public void deleteDayFromDataBase(int idworker, String workDay) throws SQLException {
+    public void deleteDayFromDataBase(int idWorker, String workDay) throws SQLException {
         Connection conn = myConnection.getMyConnection();
         int recordCount = 0;
         String queryIsDayBusy = "SELECT COUNT(*) FROM schedule WHERE idworker=? and day=?";
         PreparedStatement queryRecordCount = conn.prepareStatement(queryIsDayBusy);
-        queryRecordCount.setInt(1, idworker);
+        queryRecordCount.setInt(1, idWorker);
         queryRecordCount.setString(2, workDay);
         ResultSet resultSetRecordCount = queryRecordCount.executeQuery();
         while (resultSetRecordCount.next())
@@ -158,14 +169,14 @@ public class Operations {
         if (recordCount == 1) {
             String deleteWorkerJobDay = "DELETE FROM schedule WHERE idworker=? and day=?";
             PreparedStatement queryWorkerByID = conn.prepareStatement(deleteWorkerJobDay);
-            queryWorkerByID.setInt(1, idworker);
+            queryWorkerByID.setInt(1, idWorker);
             queryWorkerByID.setString(2, workDay);
             queryWorkerByID.executeUpdate();
         } else {
             throw new SQLException();
         }
     }
-    public void setDayTypeFromDataBase(int idworker, String day) throws SQLException{
+    public void setDayTypeFromDataBase(int idWorker, String day) throws SQLException{
         Connection conn = myConnection.getMyConnection();
         int recordCount = 0;
         String currentEntryHour = StringUtils.EMPTY; String currentExitHour = StringUtils.EMPTY; String currentFreeDay = StringUtils.EMPTY;
@@ -173,7 +184,7 @@ public class Operations {
         String currentProfSickLeave = StringUtils.EMPTY;
         String queryIsDayBusy = "SELECT COUNT(*),entryhour,exithour,extrahour,profsickleave,festive,freeday,ceased FROM schedule WHERE idworker=? and day=?";
         PreparedStatement queryRecordCount = conn.prepareStatement(queryIsDayBusy);
-        queryRecordCount.setInt(1, idworker);
+        queryRecordCount.setInt(1, idWorker);
         queryRecordCount.setString(2, day);
         ResultSet resultSetRecordCount = queryRecordCount.executeQuery();
         while (resultSetRecordCount.next()) {
@@ -249,22 +260,29 @@ public class Operations {
         while (resultSetRecordCount.next())
             recordCount = resultSetRecordCount.getInt(1);
         if (recordCount == 0) {
-                conn.commit();
-                String insertNewWorker = "INSERT INTO worker (idworker, name, section, operatorlevel) VALUES (?, ?, ?, ?)";
-                PreparedStatement queryNewWorker = conn.prepareStatement(insertNewWorker);
-                queryNewWorker.setInt(1, workerID);
-                queryNewWorker.setString(2, workerName);
-                queryNewWorker.setInt(3, sectionID);
-                queryNewWorker.setInt(3, operatorLevel);
-                queryNewWorker.executeUpdate();
-                String insertHours = "INSERT INTO hours (idworker, extrahours, holidays, agreement, ownbusiness, medic), VALUES (?, 0, 22, 4, 3, 2)";
-                PreparedStatement queryAddHours = conn.prepareStatement(insertHours);
-                queryAddHours.setInt(1, workerID);
-                queryAddHours.executeUpdate();
-                conn.rollback();
+            conn.setAutoCommit(false);
+            conn.commit();
+            String insertNewWorker = "INSERT INTO worker (idworker, name, section, operatorlevel) VALUES (?, ?, ?, ?)";
+            PreparedStatement queryNewWorker = conn.prepareStatement(insertNewWorker);
+            queryNewWorker.setInt(1, workerID);
+            queryNewWorker.setString(2, workerName);
+            queryNewWorker.setInt(3, sectionID);
+            queryNewWorker.setInt(4, operatorLevel);
+            queryNewWorker.executeUpdate();
+            String insertHours = "INSERT INTO hours (idworker, extrahours, holidays, agreement, ownbusiness, medic) VALUES (?, 0, 22, 4, 3, 2)";
+            PreparedStatement queryAddHours = conn.prepareStatement(insertHours);
+            queryAddHours.setInt(1, workerID);
+            queryAddHours.executeUpdate();
         } else {
-            JOptionPane.showMessageDialog(null," You can't add that worker. ID already in use !"," Error !",JOptionPane.ERROR_MESSAGE);
             throw new SQLException();
         }
+    }
+    public void updateWorkerSection(int workerId, int sectionId) throws SQLException{
+        Connection conn = myConnection.getMyConnection();
+        String updateWorkerSectionString = "UPDATE worker SET section = ? WHERE idworker = ?";
+        PreparedStatement updateWorkerSectionStatement = conn.prepareStatement(updateWorkerSectionString);
+        updateWorkerSectionStatement.setInt(1, sectionId);
+        updateWorkerSectionStatement.setInt(2, workerId);
+        updateWorkerSectionStatement.executeUpdate();
     }
 }

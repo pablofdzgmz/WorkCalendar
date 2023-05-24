@@ -4,27 +4,28 @@ import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.IOException;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 
 public class QueryFunctionPanels extends JPanel {
-    public static Operations operations = new Operations();
-    public static JPanel queryPanel = new JPanel();
-    public JPanel functionMainPanel = new JPanel();
-    public JPanel[] functionPanel = new JPanel[3];
-    public static Color dayColour;
-    public static ButtonGroup typeOfFreeDay, scheduleButtonGroup;
-    public static JRadioButton jRadioButtonMorning, jRadioButtonAfternoon, jRadioButtonNight, jRadioButtonWhistle; // journey buttons
-    public static JRadioButton jRadioButtonExtra, jRadioButtonProfSickLeave, jRadioButtonFestive, jRadioButtonCeased; // extra type button
-    public static JRadioButton jRadioButtonHolydays, jRadioButtonMedic, jRadioButtonAgreement, jRadioButtonOwnBusiness; //type of free day buttons
-    public static JToggleButton jToggleButtonAddDay, jToggleButtonEditDay, jToggleButtonDeleteDay; //type of query buttons
-    public static JComboBox jComboBoxWorkerId; // IdBadBoys combobox
-    public JLabel jLabelWorkerId, jLabelWorkerName, jLabelWorkerIdSection, JLabelWorkerOpLevel; //Query extra hours panel labels
-    public static JTextField jTextFieldWorkerName, jTextFieldWorkerSection, jTextFieldCheckDayForExtraHours, jTextFieldWorkerOpLevel; //Query extra hours text fields
-    public static JButton jButtonAddFullCalendar, jButtonWhoNextExtra, jButtonAddWorker, jButtonAddSection, jButtonAssignSectionToWorker;
-    public QueryFunctionPanels(){
+    private static DbConnection myConnection;
+    static Operations operations = new Operations();
+    static JPanel queryPanel = new JPanel();
+    static JPanel functionMainPanel = new JPanel();
+    static JPanel[] functionPanel = new JPanel[3];
+    static Color dayColour;
+    static ButtonGroup typeOfFreeDay, scheduleButtonGroup;
+    static JRadioButton jRadioButtonMorning, jRadioButtonAfternoon, jRadioButtonNight, jRadioButtonWhistle; // journey buttons
+    static JRadioButton jRadioButtonExtra, jRadioButtonProfSickLeave, jRadioButtonFestive, jRadioButtonCeased; // extra type button
+    static JRadioButton jRadioButtonHolydays, jRadioButtonMedic, jRadioButtonAgreement, jRadioButtonOwnBusiness; //type of free day buttons
+    static JToggleButton jToggleButtonAddDay, jToggleButtonEditDay, jToggleButtonDeleteDay; //type of query buttons
+    static JComboBox jComboBoxWorkerId; // IdBadBoys combobox
+    static JLabel jLabelWorkerId, jLabelWorkerName, jLabelWorkerIdSection, JLabelWorkerOpLevel; //Query extra hours panel labels
+    static JTextField jTextFieldWorkerName, jTextFieldWorkerSection, jTextFieldCheckDayForExtraHours, jTextFieldWorkerOpLevel; //Query extra hours text fields
+    static JButton jButtonAddFullCalendar, jButtonWhoNextExtra, jButtonAddWorker, jButtonAddSection, jButtonAssignSectionToWorker;
+    public QueryFunctionPanels(){ myConnection = new DbConnection();
         //setBounds(5, shared.alturaPantalla/2,shared.anchoPantalla-25, shared.alturaPantalla/2 );
         //Main Result Panel
         setLayout(new GridLayout(1,2));
@@ -58,7 +59,7 @@ public class QueryFunctionPanels extends JPanel {
         new ResultQueryPanel(queryPanel);
     }
 
-    public void setdEditJourneyComponents(){
+    public static void setdEditJourneyComponents(){
         functionPanel[0] = new JPanel();functionPanel[1] = new JPanel();functionPanel[2] = new JPanel();
         functionPanel[0].setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Edit Schedule"));
         functionPanel[0].setLayout(new GridLayout(3,1));
@@ -71,7 +72,7 @@ public class QueryFunctionPanels extends JPanel {
         scheduleButtonGroup.add(jRadioButtonNight); scheduleButtonGroup.add(jRadioButtonWhistle);
     }
 
-    public void setTypeOfFreeDayComponents(){
+    public static void setTypeOfFreeDayComponents(){
         jRadioButtonExtra = new JRadioButton("Extra Hour");
         jRadioButtonProfSickLeave = new JRadioButton("Professional Sick Leave");
         jRadioButtonFestive = new JRadioButton("Festive");
@@ -86,7 +87,7 @@ public class QueryFunctionPanels extends JPanel {
         typeOfFreeDay.add(jRadioButtonExtra);typeOfFreeDay.add(jRadioButtonProfSickLeave);
         typeOfFreeDay.add(jRadioButtonFestive);typeOfFreeDay.add(jRadioButtonCeased);
     }
-    public void setTypeOfQueryComponents(){
+    public static void setTypeOfQueryComponents(){
         jToggleButtonAddDay = new JToggleButton("Add");
         jToggleButtonAddDay.addActionListener(e -> {
             QueryFunctionPanels.scheduleButtonGroup.clearSelection();
@@ -106,7 +107,7 @@ public class QueryFunctionPanels extends JPanel {
         functionPanel[0].add(jToggleButtonEditDay);functionPanel[0].add(jRadioButtonHolydays);functionPanel[0].add(jRadioButtonMedic);
         functionPanel[0].add(jRadioButtonAgreement);functionPanel[0].add(jRadioButtonOwnBusiness);functionPanel[0].add(jToggleButtonDeleteDay);
     }
-    public void setQueryPanelComponents(){
+    public static void setQueryPanelComponents(){
         jLabelWorkerId = new JLabel("Code");
         jLabelWorkerName = new JLabel("Name");
         jLabelWorkerIdSection = new JLabel("Section");
@@ -120,25 +121,26 @@ public class QueryFunctionPanels extends JPanel {
         jTextFieldWorkerSection.setEditable(false); jTextFieldWorkerSection.setText("Section");
         jTextFieldWorkerOpLevel.setEditable(false); jTextFieldWorkerOpLevel.setText("Operator Level");
     }
-    public void addQueryPannelComponents(){
+    public static void addQueryPannelComponents(){
         functionPanel[1].add(jLabelWorkerId); functionPanel[1].add(jComboBoxWorkerId);
         functionPanel[1].add(jLabelWorkerName); functionPanel[1].add(jTextFieldWorkerName);
         functionPanel[1].add(jLabelWorkerIdSection); functionPanel[1].add(jTextFieldWorkerSection);
         functionPanel[1].add(JLabelWorkerOpLevel); functionPanel[1].add(jTextFieldWorkerOpLevel);
     }
-    public void setBadBoyQueryComponents(){
+    public static void setBadBoyQueryComponents(){
         jButtonAddFullCalendar = new JButton("Add full new calendar");
         jButtonAddFullCalendar.addActionListener(e -> checkScheduleAndGroup());
         jButtonWhoNextExtra = new JButton("Next worker for extra hours");
-        jButtonWhoNextExtra.addActionListener(e -> checkNextBadBoyExtraHours(QueryFunctionPanels.queryPanel, jTextFieldCheckDayForExtraHours.getText()));
+        jButtonWhoNextExtra.addActionListener(e -> checkNextWorkerExtraHours(QueryFunctionPanels.queryPanel, jTextFieldCheckDayForExtraHours.getText()));
         jTextFieldCheckDayForExtraHours = new JTextField("");
         jTextFieldCheckDayForExtraHours.setSize(12,2);jTextFieldCheckDayForExtraHours.setEditable(false);
         jButtonAddWorker = new JButton("Create new worker into Data Base");
         jButtonAddWorker.addActionListener(e -> { createNewWorker();});
         jButtonAddSection = new JButton("Create new section into Data Base");
         jButtonAssignSectionToWorker = new JButton("Assign Worker to Section");
+        jButtonAssignSectionToWorker.addActionListener(e -> { assignWorkerToSection();});
     }
-    public void addBadBoyQueryComponents(){
+    public static void addBadBoyQueryComponents(){
         functionPanel[2].add(jButtonAddFullCalendar); functionPanel[2].add(jButtonAddWorker);
         functionPanel[2].add(jButtonWhoNextExtra); functionPanel[2].add(jButtonAddSection);
         functionPanel[2].add(jTextFieldCheckDayForExtraHours); functionPanel[2].add(jButtonAssignSectionToWorker);
@@ -228,7 +230,7 @@ public class QueryFunctionPanels extends JPanel {
         else Schedule.ceased = StringUtils.EMPTY;
     }
 
-    public void checkNextBadBoyExtraHours(JPanel panel, String day){
+    public static void checkNextWorkerExtraHours(JPanel panel, String day){
         ResultQueryPanel resultQueryPanel = new ResultQueryPanel(panel);
         panel.removeAll();
         try {
@@ -242,7 +244,7 @@ public class QueryFunctionPanels extends JPanel {
             System.err.println("Something has gone wrong with data base " + e.getMessage());
         }
     }
-    public void checkScheduleAndGroup(){
+    public static void checkScheduleAndGroup(){
         int option = 0;
         String []scheduleAndGroup = {"4th Turn Group A", "4th Turn Group B","4th Turn Group C", "4th Turn Group D", "Whistles"};
         JComboBox scheduleOption = new JComboBox(scheduleAndGroup);
@@ -257,7 +259,8 @@ public class QueryFunctionPanels extends JPanel {
         }
         fillCalendarColours();
     }
-    public void createNewWorker(){
+    public static void createNewWorker(){
+        Connection conn = myConnection.getMyConnection();
         String workerName;
         int sectionID;
         int operatorLevel;
@@ -271,6 +274,12 @@ public class QueryFunctionPanels extends JPanel {
                     try {
                         operations.addNewWorker(workerID,workerName,sectionID,operatorLevel);
                     } catch (SQLException e) {
+                        try {
+                            conn.setAutoCommit(false);
+                            conn.rollback();
+                        } catch (SQLException ex) {
+                            throw new RuntimeException(ex);
+                        }
                         JOptionPane.showMessageDialog(null," You can't add that worker !"," Error !",JOptionPane.ERROR_MESSAGE);
                         System.err.println("Something has gone wrong with data base " + e.getMessage());
                     }
@@ -278,7 +287,7 @@ public class QueryFunctionPanels extends JPanel {
             }
         }
     }
-    public int askForWorkerID(){
+    public static int askForWorkerID(){
         boolean validID = false;
         int workerID = 0;
         int option = 0;
@@ -301,7 +310,7 @@ public class QueryFunctionPanels extends JPanel {
         }while(!validID);
         return workerID;
     }
-    public String askForWorkerName(){
+    public static String askForWorkerName(){
         boolean validName = false;
         String workerName = StringUtils.EMPTY;
         int option = 0;
@@ -324,7 +333,7 @@ public class QueryFunctionPanels extends JPanel {
         }while(!validName);
         return workerName;
     }
-    public int askForSectionID(){
+    public static int askForSectionID(){
         int sectionID = 0;
         int option = 0;
         String []section = {"1.- Logistica", "2.- Laboratorio","3.- Recursos humanos", "4.- Administracion", "5.- Informatica","6.- Produccion"};
@@ -341,17 +350,54 @@ public class QueryFunctionPanels extends JPanel {
             JOptionPane.showMessageDialog(null,"Create new worker canceled ! "," Canceled !",JOptionPane.ERROR_MESSAGE);
         return sectionID;
     }
-    public int askForOperatorLevel(){
+    public static int askForOperatorLevel(){
         int operatorLevel = 0;
         int option = 0;
         String []stringOperatorLevel = {"Nivel 1", "Nivel 2","Nivel 3", "Nivel 4", "Nivel 5","Nivel 6","Nivel 7"
                             ,"Nivel 8","Nivel 9","Nivel 10","Nivel 11","Nivel 12","Nivel 13","Nivel 14"};
         JComboBox operatorLevelOption = new JComboBox(stringOperatorLevel);
-        option = JOptionPane.showConfirmDialog(null, operatorLevelOption,"Select operator level", JOptionPane.YES_NO_CANCEL_OPTION);
+        option = JOptionPane.showConfirmDialog(null, operatorLevelOption, "Select operator level", JOptionPane.YES_NO_CANCEL_OPTION);
         if(option==JOptionPane.OK_OPTION) {
             operatorLevel = operatorLevelOption.getSelectedIndex()+1;
         }else
             JOptionPane.showMessageDialog(null,"Create new worker canceled ! "," Canceled !",JOptionPane.ERROR_MESSAGE);
         return operatorLevel;
+    }
+    public static void assignWorkerToSection(){
+        int option = 0;
+        ArrayList<Integer> id = new ArrayList<>();
+        ArrayList<String> name = new ArrayList<>();
+        try {
+            id = operations.getWorkerId();
+            name = operations.getSectionName();
+
+        } catch (SQLException e) {
+            System.err.println("Something has gone wrong with data base " + e.getMessage());
+        }
+        JComboBox jWorkerListComboBox = new JComboBox(id.toArray());
+        JComboBox jSectionListComboBox = new JComboBox(name.toArray());
+        jWorkerListComboBox.addActionListener(e -> {
+            String numWorker = ""+jWorkerListComboBox.getSelectedItem();
+            Worker.idWorker = (Integer.parseInt(numWorker));
+            try {
+                operations.getWorkerById(Worker.idWorker);
+                Worker workerById = operations.getWorkerById(Worker.idWorker);
+                jSectionListComboBox.setSelectedItem(workerById.getSectionName());
+            } catch (SQLException | NumberFormatException ex ) {
+                throw new RuntimeException(ex);
+            }
+        });
+        Object[] comboBox = {jWorkerListComboBox, jSectionListComboBox};
+        option = JOptionPane.showConfirmDialog(null, comboBox, "Select operator level", JOptionPane.OK_CANCEL_OPTION);
+        if(option==JOptionPane.OK_OPTION) {
+            updateWorkerSection(Integer.parseInt(jWorkerListComboBox.getSelectedItem().toString()), jSectionListComboBox.getSelectedIndex()+1);
+        }else JOptionPane.showMessageDialog(null,"Select new section canceled ! "," Canceled !",JOptionPane.ERROR_MESSAGE);
+    }
+    public static void updateWorkerSection(int workerID, int sectionID){
+        try {
+                operations.updateWorkerSection(workerID, sectionID);
+        } catch (SQLException e) {
+            System.err.println("Something has gone wrong with data base " + e.getMessage());
+        }
     }
 }
